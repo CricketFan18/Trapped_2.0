@@ -985,7 +985,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InteractionSource: {fileID: 921805447803803514}
-  InteractionRange: 10
+  InteractionRange: 2
   InteractableLayer:
     serializedVersion: 2
     m_Bits: 64
