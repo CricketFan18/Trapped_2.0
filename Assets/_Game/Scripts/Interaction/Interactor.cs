@@ -1,34 +1,54 @@
 using UnityEngine;
-using TMPro;
 
 public class Interactor : MonoBehaviour
 {
-    [Header("Settings")]
+    [Header("Interaction Settings")]
+    public Transform InteractionSource; // The Camera
     public float InteractionRange = 3f;
-    public LayerMask InteractionLayer;
-    public Transform InteractorSource; // Assign MainCamera here
+    public LayerMask InteractableLayer; // Layer 6
 
-    [Header("UI")]
-    public TextMeshProUGUI PromptText; // Assign a centered UI text
+    private IInteractable _currentTarget;
 
-    void Update()
+    private void Update()
     {
-        Ray r = new Ray(InteractorSource.position, InteractorSource.forward);
-        if (Physics.Raycast(r, out RaycastHit hit, InteractionRange, InteractionLayer))
+        if (GameManager.Instance.IsGamePaused) return;
+
+        // 1. Raycast forward
+        Ray r = new Ray(InteractionSource.position, InteractionSource.forward);
+
+        if (Physics.Raycast(r, out RaycastHit hit, InteractionRange, InteractableLayer))
         {
+            // 2. Check if object has IInteractable
             if (hit.collider.TryGetComponent(out IInteractable interactable))
             {
-                if (PromptText) PromptText.text = interactable.InteractionPrompt;
+                _currentTarget = interactable;
 
+                // 3. Update UI
+                UIManager.Instance.SetInteractionPrompt(interactable.InteractionPrompt);
+
+                // 4. Listen for Input
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    interactable.OnInteract();
+                    interactable.Interact(this);
                 }
+            }
+            else
+            {
+                ClearInteraction();
             }
         }
         else
         {
-            if (PromptText) PromptText.text = "";
+            ClearInteraction();
+        }
+    }
+
+    private void ClearInteraction()
+    {
+        if (_currentTarget != null)
+        {
+            _currentTarget = null;
+            UIManager.Instance.SetInteractionPrompt("");
         }
     }
 }

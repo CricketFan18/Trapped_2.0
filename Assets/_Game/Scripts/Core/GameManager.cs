@@ -1,61 +1,64 @@
 using UnityEngine;
-using TMPro; // Standard Unity UI
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
     [Header("Game Settings")]
-    public float TimeRemaining = 7200f; // 2 Hours in seconds
-    public bool IsPaused = false;
-
-    [Header("UI References")]
-    public TextMeshProUGUI TimerText; // Drag your UI Text here
-    public GameObject GameOverPanel;
-    public GameObject WinPanel;
+    public float MaxTime = 7200f; // 2 Hours
+    public float CurrentTime;
+    public bool IsGamePaused = false;
+    public bool HasEscaped = false;
 
     private void Awake()
     {
-        // Singleton Pattern
-        if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
-        else { Destroy(gameObject); }
-    }
-
-    void Update()
-    {
-        if (!IsPaused && TimeRemaining > 0)
+        // Ensure only one Manager exists
+        if (Instance == null)
         {
-            TimeRemaining -= Time.deltaTime;
-            UpdateTimerUI();
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-        else if (TimeRemaining <= 0 && !IsPaused)
+        else
         {
-            TriggerGameOver();
+            Destroy(gameObject);
         }
     }
 
-    void UpdateTimerUI()
+    private void Start()
     {
-        if (TimerText != null)
+        CurrentTime = MaxTime;
+        // Lock cursor for FPS
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void Update()
+    {
+        if (!IsGamePaused && !HasEscaped)
         {
-            float minutes = Mathf.FloorToInt(TimeRemaining / 60);
-            float seconds = Mathf.FloorToInt(TimeRemaining % 60);
-            TimerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+            CurrentTime -= Time.deltaTime;
+
+            if (CurrentTime <= 0)
+            {
+                CurrentTime = 0;
+                GameOver();
+            }
         }
     }
 
-    public void TriggerGameOver()
+    public void GameOver()
     {
-        IsPaused = true;
-        if (GameOverPanel) GameOverPanel.SetActive(true);
+        IsGamePaused = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         Debug.Log("GAME OVER: TIME EXPIRED");
+        // UIManager.Instance.ShowGameOver(); // We will add this later
     }
 
-    public void TriggerWin()
+    public void WinGame()
     {
-        IsPaused = true;
-        if (WinPanel) WinPanel.SetActive(true);
-        Debug.Log("MISSION ACCOMPLISHED");
+        HasEscaped = true;
+        IsGamePaused = true;
+        Debug.Log("YOU ESCAPED!");
     }
 }
