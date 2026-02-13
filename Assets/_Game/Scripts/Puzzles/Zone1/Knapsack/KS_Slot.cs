@@ -6,11 +6,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
 {
-    private Image slotImage;
-    private bool isHovered;
+    public Image slotImage;
+    public bool isHovered;
     private KS_Item heldItem;
+    public bool isBagSlot = false;
+    [SerializeField] private knapsackManager KS_manager;
     private void Awake()
     {
+        KS_manager = FindObjectOfType<knapsackManager>();
         slotImage = transform.GetChild(0).GetComponent<Image>();
 
     }
@@ -24,10 +27,12 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
     {
         heldItem = item;
         updateSlot();
+        updateStats();
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovered = true;
+        Debug.Log("Hovering over slot with item: " + (heldItem != null ? heldItem.itemName : "Empty Slot"));
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -51,12 +56,42 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
 
     public void clearSlot()
     {
+        updateStats(true);
         heldItem = null;
         updateSlot();
+        
+        
     }
 
     public bool hasItem()
     {
         return heldItem != null;
     }
+
+    public void updateStats(bool removeItem=false)
+    {
+        if (isBagSlot)
+        {
+            if (!removeItem)
+            {
+                KS_manager.stealthLevel += heldItem.stealthValue;
+                KS_manager.bulk += heldItem.bulkValue;
+            }
+            else
+            {
+                KS_manager.stealthLevel -= heldItem.stealthValue;
+                KS_manager.bulk -= heldItem.bulkValue;
+            }
+
+            KS_manager.updateStealth();
+
+
+        }
+
+
+    }
+
+    
+
+
 }

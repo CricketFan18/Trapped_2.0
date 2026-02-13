@@ -9,6 +9,8 @@ public class KS_Item :ScriptableObject
     public Sprite icon;
     public GameObject itemPrefab;
 
+    public int stealthValue;
+    public int bulkValue;
     // Start is called before the first frame update
     void Start()
     {
