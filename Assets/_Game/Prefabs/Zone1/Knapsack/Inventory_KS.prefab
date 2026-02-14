@@ -87,7 +87,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &491362166682273171
 RectTransform:
   m_ObjectHideFlags: 0
@@ -350,8 +350,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 491362166682273171}
   - {fileID: 8843516748991698772}
+  - {fileID: 491362166682273171}
   - {fileID: 7736226292626829301}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -376,7 +376,7 @@ MonoBehaviour:
   item2: {fileID: 11400000, guid: 88387d1ca2428dc41af2651b713a54fc, type: 2}
   BagObj: {fileID: 2142365518214211822}
   InventoryObj: {fileID: 520003838150182377}
-  draggedSlotImg: {fileID: 0}
+  draggedSlotImg: {fileID: 6425140897023327345}
   draggedSlot: {fileID: 0}
 --- !u!1001 &139956306769734796
 PrefabInstance:

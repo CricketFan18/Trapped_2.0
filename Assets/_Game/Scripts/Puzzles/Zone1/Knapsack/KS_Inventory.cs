@@ -19,6 +19,7 @@ public class KS_Inventory : MonoBehaviour
     private List<KS_Slot> allSlots = new List<KS_Slot>();
     private void Awake()
     {
+        draggedSlotImg.enabled = false;
         inventorySlots.AddRange(InventoryObj.GetComponentsInChildren<KS_Slot>());
         bagSlots.AddRange(BagObj.GetComponentsInChildren<KS_Slot>());
 
@@ -68,7 +69,7 @@ public class KS_Inventory : MonoBehaviour
                 draggedSlot = hovered_slot;
                 isDragging = true;
 
-                draggedSlotImg.enabled= true;
+                draggedSlotImg.enabled = true;
                 draggedSlotImg.sprite = draggedSlot.GetItem().icon;
                 draggedSlotImg.color = new Color(1, 1, 1, 0.5f);
                 
@@ -107,7 +108,7 @@ public class KS_Inventory : MonoBehaviour
     {
         if (from == to) return;
 
-        if(to.hasItem())
+        if(to.hasItem()) // if moving to a slot that already has an item then we will swap them
         {
             KS_Item temp_item1 = to.GetItem();
             KS_Item temp_item2 = from.GetItem();
@@ -121,7 +122,7 @@ public class KS_Inventory : MonoBehaviour
             from.set_item(temp_item1);
 
         }
-        else
+        else // else we will just move the item to the new slot
         {
             to.set_item(from.GetItem());
             from.clearSlot();

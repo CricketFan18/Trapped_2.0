@@ -22,7 +22,7 @@ public class knapsackManager : MonoBehaviour
     {
         container.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = true;
+        Cursor.visible = false;
     }
     public void Update()
     {
@@ -30,7 +30,7 @@ public class knapsackManager : MonoBehaviour
         //Toggle Inventory
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            //it contains the inventory so we toggle it on and off
+            //container contains the inventory so we toggle it on and off
             container.SetActive(!container.activeInHierarchy);
             GameManager.Instance.IsGamePaused = !GameManager.Instance.IsGamePaused;
             Cursor.lockState = GameManager.Instance.IsGamePaused ? CursorLockMode.None:CursorLockMode.Locked;
