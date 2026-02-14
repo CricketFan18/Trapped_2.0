@@ -32,12 +32,16 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovered = true;
-        Debug.Log("Hovering over slot with item: " + (heldItem != null ? heldItem.itemName : "Empty Slot"));
+        if(heldItem != null)
+        {
+            KS_manager.itemText.text = heldItem.name + "\n" + "Stealth Value: " + heldItem.stealthValue + "\n" + "Bulk Value: " + heldItem.bulkValue;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         isHovered = false;
+        KS_manager.itemText.text = "";
     }
 
     public void updateSlot()
@@ -83,7 +87,7 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
                 KS_manager.bulk -= heldItem.bulkValue;
             }
 
-            KS_manager.updateStealth();
+            KS_manager.updateStats();
 
 
         }

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using static UnityEditor.Progress;
+using UnityEngine.UI;
 
 public class knapsackManager : MonoBehaviour
 {
@@ -9,7 +11,9 @@ public class knapsackManager : MonoBehaviour
     public int stealthLevel = 0;
     public int bulk = 0;
     public GameObject container;
-
+    public TextMeshProUGUI itemText;
+    [SerializeField] private Slider StealthBar;
+    [SerializeField] private Slider BulkBar;
     private void Awake()
     {
         container.SetActive(true);
@@ -34,8 +38,10 @@ public class knapsackManager : MonoBehaviour
         }
         checkBulkLevel();
     }
-    public void updateStealth()
+    public void updateStats()
     {
+        StealthBar.value = (float)stealthLevel;
+        BulkBar.value = (float)bulk;
         Debug.Log("Stealth Level: " + stealthLevel + "Bulk Level" + bulk);
     }
 
