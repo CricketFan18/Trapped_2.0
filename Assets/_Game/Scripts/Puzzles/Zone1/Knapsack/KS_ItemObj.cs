@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class KS_ItemObj : MonoBehaviour,IInteractable
+public class KS_ItemObj : MonoBehaviour, IInteractable
 {
     public KS_Item item;
     private knapsackManager InventoryParent;
-    private bool over=false;
+    private bool over = false;
 
     private void Start()
     {
@@ -21,6 +21,7 @@ public class KS_ItemObj : MonoBehaviour,IInteractable
     {
         // Simple visual feedback
         InventoryParent.GetComponentInChildren<KS_Inventory>().AddItem(item);
+        InventoryParent.GetComponent<knapsackManager>().items_collected += 1;
         Debug.Log("Interaction Successful!");
         over = true;
         return true;
@@ -28,9 +29,11 @@ public class KS_ItemObj : MonoBehaviour,IInteractable
 
     private void FixedUpdate()
     {
-        if(over)
+        if (over)
         {
-            Destroy(gameObject);
+            over = false;
+            gameObject.SetActive(false);
+            
         }
     }
 }

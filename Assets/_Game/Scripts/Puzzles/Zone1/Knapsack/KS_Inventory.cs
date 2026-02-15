@@ -30,7 +30,7 @@ public class KS_Inventory : MonoBehaviour
     private void Update()
     {
         startDrag();
-        updateDragIcon();
+        //updateDragIcon();
         endDrag();
 
     }
@@ -63,15 +63,15 @@ public class KS_Inventory : MonoBehaviour
         {
             
             KS_Slot hovered_slot = GetHoveredSlot();
-            Debug.Log(hovered_slot!=null);
+            //Debug.Log(hovered_slot!=null);
             if (hovered_slot != null && hovered_slot.hasItem())
             {
                 draggedSlot = hovered_slot;
                 isDragging = true;
 
-                draggedSlotImg.enabled = true;
-                draggedSlotImg.sprite = draggedSlot.GetItem().icon;
-                draggedSlotImg.color = new Color(1, 1, 1, 0.5f);
+                //draggedSlotImg.enabled = true;
+                //draggedSlotImg.sprite = draggedSlot.GetItem().icon;
+                //draggedSlotImg.color = new Color(1, 1, 1, 0.5f);
                 
             }
         }
@@ -110,6 +110,7 @@ public class KS_Inventory : MonoBehaviour
 
         if(to.hasItem()) // if moving to a slot that already has an item then we will swap them
         {
+            Debug.Log("moving item to occupied slot");
             KS_Item temp_item1 = to.GetItem();
             KS_Item temp_item2 = from.GetItem();
 
@@ -124,8 +125,17 @@ public class KS_Inventory : MonoBehaviour
         }
         else // else we will just move the item to the new slot
         {
+            Debug.Log("moving item to empty slot");
             to.set_item(from.GetItem());
             from.clearSlot();
+        }
+    }
+
+    public void clearAllSlots()
+    {
+        foreach (KS_Slot slot in allSlots)
+        {
+            slot.clearSlot();
         }
     }
 }

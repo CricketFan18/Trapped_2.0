@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 85cace3d1021a7f48b4b1a1593085877, type: 3}
-  m_Name: SmokeBomb
+  m_Name: Hammer
   m_EditorClassIdentifier: 
-  itemName: SmokeBomb
-  icon: {fileID: 21300000, guid: 2cc4fa3a13ffb4a44bb5bfa502d6e8c2, type: 3}
+  itemName: Hammer
+  icon: {fileID: 21300000, guid: 97975120ae726464893e6587a14c2b62, type: 3}
   itemPrefab: {fileID: 0}
-  stealthValue: 23
-  bulkValue: 9
+  stealthValue: 10
+  bulkValue: 15

@@ -15,5 +15,5 @@ MonoBehaviour:
   itemName: crowbar
   icon: {fileID: 21300000, guid: c178b4370e64097468939ed6b3e07fbc, type: 3}
   itemPrefab: {fileID: 0}
-  stealthValue: 10
-  bulkValue: 10
+  stealthValue: 15
+  bulkValue: 14
