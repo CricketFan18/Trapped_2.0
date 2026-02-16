@@ -122,7 +122,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &1894948503
+--- !u!1001 &771726366
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -130,10 +130,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1850402823382292240, guid: e3230d3f30f3b9445871e0b7b6c5e373, type: 3}
-      propertyPath: m_Name
-      value: Crosshair
-      objectReference: {fileID: 0}
     - target: {fileID: 2120474450026205046, guid: e3230d3f30f3b9445871e0b7b6c5e373, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -183,7 +179,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3230d3f30f3b9445871e0b7b6c5e373, type: 3}
---- !u!1001 &2043817800
+--- !u!1001 &797006577
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -240,7 +236,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 480bcc4b8295b6d4c9f350f423171fd1, type: 3}
---- !u!1001 &8129770937542431419
+--- !u!1001 &2083062031
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -288,26 +284,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8021542812507940638, guid: c8d889a173ae0724d958ce1fa9a0ee4b, type: 3}
-      propertyPath: m_Range
-      value: 5.06
-      objectReference: {fileID: 0}
-    - target: {fileID: 8021542812507940638, guid: c8d889a173ae0724d958ce1fa9a0ee4b, type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8021542812507940638, guid: c8d889a173ae0724d958ce1fa9a0ee4b, type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8021542812507940638, guid: c8d889a173ae0724d958ce1fa9a0ee4b, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8021542812507940638, guid: c8d889a173ae0724d958ce1fa9a0ee4b, type: 3}
-      propertyPath: m_Intensity
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 8413114618206667968, guid: c8d889a173ae0724d958ce1fa9a0ee4b, type: 3}
       propertyPath: m_Name
       value: DecoyGem
@@ -321,6 +297,6 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1894948503}
-  - {fileID: 2043817800}
-  - {fileID: 8129770937542431419}
+  - {fileID: 2083062031}
+  - {fileID: 771726366}
+  - {fileID: 797006577}

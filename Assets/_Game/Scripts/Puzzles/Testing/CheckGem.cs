@@ -8,6 +8,13 @@ public class CheckGem : MonoBehaviour, IInteractable
     public string InteractionPrompt => "The counterfeit belongs within";
     public Transform win;
     public Transform fail;
+    public AudioClip alarmSound;
+    private AudioSource audioSource;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -23,11 +30,17 @@ public class CheckGem : MonoBehaviour, IInteractable
             else
             {
                 GemManager.instance.RemoveAllGems();
-                LevelScript.instance.TriggerAlarm();
+                TriggerAlarm();
             }
         }
     }
-
+    
+    public void TriggerAlarm()
+    {
+        audioSource.clip = alarmSound; audioSource.Play();
+        GameManager.Instance.TimePenalty(300f);
+    }
+    
     bool IInteractable.Interact(Interactor interactor)
     {
         return true;
