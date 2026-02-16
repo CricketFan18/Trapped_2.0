@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 public class GemManager : MonoBehaviour
@@ -29,6 +30,16 @@ public class GemManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && holding)
         {
             heldGem.PlaceGem();
+        }
+    }
+
+    public void RemoveAllGems()
+    {
+        while (gems.Count > 0)
+        {
+            Gem gem = gems[0];
+            gems.RemoveAt(0);
+            Destroy(gem.gameObject);
         }
     }
 }

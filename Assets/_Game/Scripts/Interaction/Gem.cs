@@ -51,7 +51,6 @@ public class Gem : MonoBehaviour, IInteractable
         {
             transform.SetParent(null);
             transform.position = hit.point;
-            transform.rotation = Quaternion.identity;
             transform.GetComponent<Rigidbody>().isKinematic = false;
             GemManager.instance.holding = false;
             GemManager.instance.heldGem = null;

@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LevelScript : MonoBehaviour
@@ -9,12 +11,24 @@ public class LevelScript : MonoBehaviour
     
     public Transform gemPrefab;
     public Transform spawnPoint;
-    public string InteractionPrompt => "Press E to Spawn Gems";
 
+    public AudioClip alarmSound;
+    public static LevelScript instance;
+    
+    private AudioSource audioSource;
+
+    private void Awake()
+    {
+        if (instance == null) instance = this;
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    public string InteractionPrompt => "Press E to Spawn Gems";
+    
     public void SpawnGems(Button button)
     {
         button.GetComponent<AudioSource>().Play();
-        transform.DOMoveY(transform.position.y - 0.065f, 0.1f)
+        button.transform.DOMoveY(button.transform.position.y - 0.065f, 0.1f)
             .SetEase(Ease.OutQuad)
             .SetLoops(2, LoopType.Yoyo);
         StartCoroutine(SpawnCoroutine());
@@ -32,4 +46,9 @@ public class LevelScript : MonoBehaviour
         Destroy(this);
     }
 
+    public void TriggerAlarm()
+    {
+        audioSource.clip = alarmSound; audioSource.Play();
+        GameManager.Instance.TimePenalty(300f);
+    }
 }

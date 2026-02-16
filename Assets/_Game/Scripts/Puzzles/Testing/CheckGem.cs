@@ -22,8 +22,8 @@ public class CheckGem : MonoBehaviour, IInteractable
             }
             else
             {
-                Debug.Log("Failed.......ALARM TRIGGERED");
-                fail.gameObject.SetActive(true);
+                GemManager.instance.RemoveAllGems();
+                LevelScript.instance.TriggerAlarm();
             }
         }
     }
