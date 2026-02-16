@@ -6,12 +6,28 @@ public class Interactor : MonoBehaviour
     public Transform InteractionSource; // The Camera
     public float InteractionRange = 3f;
     public LayerMask InteractableLayer; // Layer 6
+    public Transform HoldPoint; // Where objects are held
 
     private IInteractable _currentTarget;
+    public IInteractable CurrentHeldObject { get; private set; }
 
     private void Update()
     {
         if (GameManager.Instance.IsGamePaused) return;
+
+        // If holding an object, handle drop logic or secondary interact
+        if (CurrentHeldObject != null)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                // Trigger interact on the held object to potentially drop or use it
+                CurrentHeldObject.Interact(this);
+            }
+            // While holding, we might want to disable raycasting for new interactions
+            // Or raycast past the object. For now, let's keep it simple: No new interactions while holding.
+            UIManager.Instance.SetInteractionPrompt("Press E to Drop/Use");
+            return;
+        }
 
         // 1. Raycast forward
         Ray r = new Ray(InteractionSource.position, InteractionSource.forward);
@@ -41,6 +57,16 @@ public class Interactor : MonoBehaviour
         {
             ClearInteraction();
         }
+    }
+
+    public void SetHeldObject(IInteractable heldObject)
+    {
+        CurrentHeldObject = heldObject;
+    }
+
+    public void ClearHeldObject()
+    {
+        CurrentHeldObject = null;
     }
 
     private void ClearInteraction()
