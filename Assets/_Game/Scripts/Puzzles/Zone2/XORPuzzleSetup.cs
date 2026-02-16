@@ -3,9 +3,9 @@ using UnityEngine;
 public class XORPuzzleSetup : MonoBehaviour
 {
     [Header("Puzzle Configuration")]
-    public GameObject PlaneA; // The hidden message
-    public GameObject PlaneB; // The revealer / filter / UV light
-    
+    public GameObject PlaneA;
+    public GameObject PlaneB;
+
     [Header("Materials")]
     public Material PlaneAMaterial;
     public Material RevealerMaterial;
@@ -18,40 +18,61 @@ public class XORPuzzleSetup : MonoBehaviour
     [ContextMenu("Setup Puzzle")]
     public void SetupPuzzle()
     {
-        // Setup Plane A (Hidden Message)
-        if (PlaneA != null)
-        {
-            if (PlaneA.GetComponent<Collider>() == null) PlaneA.AddComponent<BoxCollider>();
-            if (PlaneA.GetComponent<Rigidbody>() == null) PlaneA.AddComponent<Rigidbody>();
-            
-            var grab = PlaneA.GetComponent<GrabbableObject>();
-            if (grab == null) grab = PlaneA.AddComponent<GrabbableObject>();
-            grab.ObjectName = "Hidden Message Sheet";
-            grab.UsePhysics = true;
+        SetupSheet(PlaneA, PlaneAMaterial, "Message Sheet");
+        SetupSheet(PlaneB, RevealerMaterial, "Filter Sheet");
+        WireEncryptedTexture();
+    }
 
-            if (PlaneAMaterial != null)
-            {
-                var rend = PlaneA.GetComponent<Renderer>();
-                if (rend != null) rend.material = PlaneAMaterial;
-            }
+    private void WireEncryptedTexture()
+    {
+        // The filter shader needs _EncryptedTex to compute the XOR decode.
+        // Copy the encrypted texture from PlaneA's material into PlaneB's material.
+        if (PlaneA == null || PlaneB == null) return;
+
+        var rendA = PlaneA.GetComponent<Renderer>();
+        var rendB = PlaneB.GetComponent<Renderer>();
+        if (rendA == null || rendB == null) return;
+
+        Texture encTex = rendA.sharedMaterial != null
+            ? rendA.sharedMaterial.mainTexture
+            : null;
+        if (encTex == null && PlaneAMaterial != null)
+            encTex = PlaneAMaterial.mainTexture;
+
+        if (encTex != null && rendB.material.HasProperty("_EncryptedTex"))
+        {
+            rendB.material.SetTexture("_EncryptedTex", encTex);
+        }
+    }
+
+    private void SetupSheet(GameObject obj, Material mat, string sheetName)
+    {
+        if (obj == null) return;
+
+        if (obj.GetComponent<Collider>() == null)
+            obj.AddComponent<BoxCollider>();
+
+        if (obj.GetComponent<Rigidbody>() == null)
+        {
+            var rb = obj.AddComponent<Rigidbody>();
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         }
 
-        // Setup Plane B (Revealer / UV Light)
-        if (PlaneB != null)
+        var sheet = obj.GetComponent<PuzzleSheet>();
+        if (sheet == null) sheet = obj.AddComponent<PuzzleSheet>();
+        sheet.ObjectName = sheetName;
+        sheet.UsePhysics = true;
+
+        // Ensure it can be dragged on the table
+        if (obj.GetComponent<TableDraggable>() == null)
+            obj.AddComponent<TableDraggable>();
+
+        obj.layer = 6;
+
+        if (mat != null)
         {
-            if (PlaneB.GetComponent<Collider>() == null) PlaneB.AddComponent<BoxCollider>();
-            if (PlaneB.GetComponent<Rigidbody>() == null) PlaneB.AddComponent<Rigidbody>();
-
-            var grab = PlaneB.GetComponent<GrabbableObject>();
-            if (grab == null) grab = PlaneB.AddComponent<GrabbableObject>();
-            grab.ObjectName = "UV Filter Sheet";
-            grab.UsePhysics = true;
-
-            if (RevealerMaterial != null)
-            {
-                var rend = PlaneB.GetComponent<Renderer>();
-                if (rend != null) rend.material = RevealerMaterial;
-            }
+            var rend = obj.GetComponent<Renderer>();
+            if (rend != null) rend.material = mat;
         }
     }
 }

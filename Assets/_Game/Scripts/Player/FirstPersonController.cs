@@ -17,6 +17,48 @@ public class FirstPersonController : MonoBehaviour
     private Vector3 _moveDirection = Vector3.zero;
     private float _rotationX = 0;
 
+    // --- Focus Mode Support ---
+    public bool IsFocused { get; private set; } = false;
+    private Vector3 _savedCamLocalPos;
+    private Quaternion _savedCamLocalRot;
+    private Vector3 _savedBodyPos;
+    private Quaternion _savedBodyRot;
+    private Transform _focusTarget;
+
+    public void EnterFocusMode(Transform target)
+    {
+        if (IsFocused || target == null) return;
+
+        IsFocused = true;
+        _focusTarget = target;
+
+        _savedCamLocalPos = CameraTransform.localPosition;
+        _savedCamLocalRot = CameraTransform.localRotation;
+        _savedBodyPos = transform.position;
+        _savedBodyRot = transform.rotation;
+
+        _characterController.enabled = false;
+
+        Debug.Log($"[FPS] Entered Focus Mode -> {target.name} at {target.position}");
+    }
+
+    public void ExitFocusMode()
+    {
+        if (!IsFocused) return;
+
+        IsFocused = false;
+        _focusTarget = null;
+
+        CameraTransform.localPosition = _savedCamLocalPos;
+        CameraTransform.localRotation = _savedCamLocalRot;
+        transform.position = _savedBodyPos;
+        transform.rotation = _savedBodyRot;
+
+        _characterController.enabled = true;
+
+        Debug.Log("[FPS] Exited Focus Mode");
+    }
+
     private void Start()
     {
         _characterController = GetComponent<CharacterController>();
@@ -24,7 +66,13 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.IsGamePaused) return;
+        if (GameManager.Instance != null && GameManager.Instance.IsGamePaused) return;
+
+        if (IsFocused)
+        {
+            UpdateFocusMode();
+            return;
+        }
 
         // 1. Calculate Movement (Local Space)
         Vector3 forward = transform.TransformDirection(Vector3.forward);
@@ -51,5 +99,14 @@ public class FirstPersonController : MonoBehaviour
         _rotationX = Mathf.Clamp(_rotationX, -LookXLimit, LookXLimit);
         CameraTransform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * MouseSensitivity, 0);
+    }
+
+    private void UpdateFocusMode()
+    {
+        if (_focusTarget == null) return;
+
+        float speed = 8f;
+        CameraTransform.position = Vector3.Lerp(CameraTransform.position, _focusTarget.position, Time.deltaTime * speed);
+        CameraTransform.rotation = Quaternion.Slerp(CameraTransform.rotation, _focusTarget.rotation, Time.deltaTime * speed);
     }
 }
