@@ -24,7 +24,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.IsGamePaused) return;
+        if (GameManager.Instance.IsGamePaused || InventorySystem.Instance.isOpen) return;
 
         // 1. Calculate Movement (Local Space)
         Vector3 forward = transform.TransformDirection(Vector3.forward);
