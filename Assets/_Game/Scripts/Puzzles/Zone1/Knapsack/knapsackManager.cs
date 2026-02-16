@@ -70,10 +70,12 @@ public class knapsackManager : MonoBehaviour
     {
         if (showInfo)
         {
-            if (items_collected < 4)
+            if (items_collected < 10)
                 infoText.text = "Collect all 10 items";
             else if (stealthLevel < 95)
                 infoText.text = "Increase your stealth level to 95 or more";
+            else // for debugging purpose this message will shown when player has completed the level
+                infoText.text = "Player Escaped"; 
         }
         else
         {

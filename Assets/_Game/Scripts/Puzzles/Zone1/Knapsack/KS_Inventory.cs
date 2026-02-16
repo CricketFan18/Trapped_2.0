@@ -62,7 +62,7 @@ public class KS_Inventory : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             
-            KS_Slot hovered_slot = GetHoveredSlot();
+            KS_Slot hovered_slot = GetHoveredSlot(); //get current hover slot
             //Debug.Log(hovered_slot!=null);
             if (hovered_slot != null && hovered_slot.hasItem())
             {

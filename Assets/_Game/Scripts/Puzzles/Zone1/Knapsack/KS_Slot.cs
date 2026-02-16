@@ -34,6 +34,7 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
         isHovered = true;
         if(heldItem != null)
         {
+            //displays item details
             KS_manager.itemText.text = heldItem.name + "\n" + "Stealth Value: " + heldItem.stealthValue + "\n" + "Bulk Value: " + heldItem.bulkValue;
         }
     }
@@ -78,11 +79,12 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
         {
             if (!removeItem)
             {
+                //if removeItem is false then add stealth and bulk values to the manager
                 KS_manager.stealthLevel += heldItem.stealthValue;
                 KS_manager.bulk += heldItem.bulkValue;
             }
             else
-            {
+            {  //if removeItem is true then remove stealth and bulk values from the manager
                 KS_manager.stealthLevel -= heldItem.stealthValue;
                 KS_manager.bulk -= heldItem.bulkValue;
             }

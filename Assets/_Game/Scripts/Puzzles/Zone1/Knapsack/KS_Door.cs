@@ -15,10 +15,10 @@ public class KS_Door : MonoBehaviour,IInteractable
     // Implementation of the Interface Method
     public bool Interact(Interactor interactor)
     {
-        if (KS_manager.GetComponent<knapsackManager>().stealthLevel >= 5 || KS_manager.items_collected == 10)
+        if (KS_manager.GetComponent<knapsackManager>().stealthLevel >= 95 && KS_manager.items_collected == 10)
         {
             Debug.Log("Door opened! You escaped the room.");
-            
+            KS_manager.DisplayDoorMsg();
         }
         else
         {

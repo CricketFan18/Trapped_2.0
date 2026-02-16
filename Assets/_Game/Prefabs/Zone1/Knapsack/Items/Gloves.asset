@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gloves
   m_EditorClassIdentifier: 
   itemName: Gloves
-  icon: {fileID: 21300000, guid: e36d5f1e697190c418a051ea374f2a3a, type: 3}
+  icon: {fileID: 21300000, guid: 70198fafa6a6305428ce766c495bb7e7, type: 3}
   itemPrefab: {fileID: 0}
   stealthValue: 14
   bulkValue: 6
