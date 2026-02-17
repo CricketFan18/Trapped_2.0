@@ -68,8 +68,20 @@ public class InventorySystem : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.I) && isOpen)
         {
+            // We replaced the manual code here with a call to our new method
+            CloseInventory();
+        }
+    }
+
+    // NEW METHOD: This is public so your UI Button can see and trigger it!
+    public void CloseInventory()
+    {
+        if (isOpen)
+        {
             inventoryScreenUI.SetActive(false);
             isOpen = false;
+
+            // Re-lock the cursor so the player can look around again
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
