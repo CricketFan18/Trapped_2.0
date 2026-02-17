@@ -46,5 +46,6 @@ public class C4Explosion : MonoBehaviour
         }
 
         gameObject.SetActive(false);
+        Destroy(gameObject, 3f);
     }
 }
