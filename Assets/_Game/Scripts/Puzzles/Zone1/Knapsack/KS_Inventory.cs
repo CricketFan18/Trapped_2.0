@@ -13,7 +13,6 @@ public class KS_Inventory : MonoBehaviour
     public KS_Slot draggedSlot = null;
     private bool isDragging = false;
 
-    private int items_collected = 0;
     private List<KS_Slot> bagSlots = new List<KS_Slot>();
     private List<KS_Slot> inventorySlots = new List<KS_Slot>();
     private List<KS_Slot> allSlots = new List<KS_Slot>();
@@ -131,11 +130,21 @@ public class KS_Inventory : MonoBehaviour
         }
     }
 
-    public void clearAllSlots()
+
+    public void clearBagSlot()
     {
-        foreach (KS_Slot slot in allSlots)
+        foreach (KS_Slot bag_slot in bagSlots)
         {
-            slot.clearSlot();
+            foreach (KS_Slot inv_slot in inventorySlots)
+            {
+                if(!inv_slot.hasItem())
+                {
+                    inv_slot.set_item(bag_slot.GetItem());
+                    break;
+                }
+                
+            }
+            bag_slot.clearSlot();
         }
     }
 }
