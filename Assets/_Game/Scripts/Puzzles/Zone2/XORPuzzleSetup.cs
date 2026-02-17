@@ -33,15 +33,34 @@ public class XORPuzzleSetup : MonoBehaviour
         var rendB = PlaneB.GetComponent<Renderer>();
         if (rendA == null || rendB == null) return;
 
-        Texture encTex = rendA.sharedMaterial != null
-            ? rendA.sharedMaterial.mainTexture
-            : null;
+        Texture encTex = null;
+        if (rendA.sharedMaterial != null)
+            encTex = rendA.sharedMaterial.mainTexture;
+        if (encTex == null && rendA.material != null)
+            encTex = rendA.material.mainTexture;
         if (encTex == null && PlaneAMaterial != null)
             encTex = PlaneAMaterial.mainTexture;
 
-        if (encTex != null && rendB.material.HasProperty("_EncryptedTex"))
+        Material filterMat = rendB.material;
+
+        // Ensure the filter material uses the XORReveal shader
+        if (filterMat.shader.name != "Custom/XORReveal")
         {
-            rendB.material.SetTexture("_EncryptedTex", encTex);
+            Shader xorShader = Shader.Find("Custom/XORReveal");
+            if (xorShader != null)
+            {
+                Texture existingKey = filterMat.HasProperty("_MainTex") ? filterMat.GetTexture("_MainTex") : null;
+                filterMat.shader = xorShader;
+                filterMat.renderQueue = 3100;
+                if (existingKey != null)
+                    filterMat.SetTexture("_MainTex", existingKey);
+            }
+        }
+
+        if (encTex != null && filterMat.HasProperty("_EncryptedTex"))
+        {
+            filterMat.SetTexture("_EncryptedTex", encTex);
+            Debug.Log($"[XORPuzzleSetup] Wired _EncryptedTex ({encTex.name}) onto filter sheet.");
         }
     }
 

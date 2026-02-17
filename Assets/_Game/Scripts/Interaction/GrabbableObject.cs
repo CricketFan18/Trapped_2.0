@@ -18,6 +18,8 @@ public class GrabbableObject : MonoBehaviour, IInteractable
     private bool _isHeld = false;
     private Interactor _currentInteractor;
 
+    public bool IsHeld => _isHeld;
+
     public string InteractionPrompt => _isHeld ? $"Press E to Drop {ObjectName}" : $"Press E to Grab {ObjectName}";
 
     private void Awake()

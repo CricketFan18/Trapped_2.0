@@ -311,9 +311,9 @@ public class XORPuzzleCreator : EditorWindow
         // --- Answer Zone (visual marker on the table) ---
         GameObject answerZone = GameObject.CreatePrimitive(PrimitiveType.Quad);
         answerZone.name = "AnswerZone";
-        // Position at right side of table surface
+        // Position at center-top area of table surface
         answerZone.transform.SetParent(table.transform, false);
-        answerZone.transform.localPosition = new Vector3(0.25f, 0.51f, 0);
+        answerZone.transform.localPosition = new Vector3(0f, 0.51f, 0.15f);
         answerZone.transform.localRotation = Quaternion.Euler(90f, 0, 0);
         answerZone.transform.localScale = new Vector3(0.22f, 0.22f, 1f);
         answerZone.layer = 0; // Not interactable
@@ -334,36 +334,14 @@ public class XORPuzzleCreator : EditorWindow
         zoneMat.renderQueue = 3000;
         answerZone.GetComponent<Renderer>().sharedMaterial = zoneMat;
 
-        // --- Reference image (the secret shape the player saw via XOR) ---
-        GameObject refImage = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        refImage.name = "ReferenceShape";
-        refImage.transform.SetParent(table.transform, false);
-        refImage.transform.localPosition = new Vector3(-0.25f, 0.51f, 0.25f);
-        refImage.transform.localRotation = Quaternion.Euler(90f, 0, 0);
-        refImage.transform.localScale = new Vector3(0.18f, 0.18f, 1f);
-        refImage.layer = 0;
-        DestroyImmediate(refImage.GetComponent<Collider>());
-
-        // Use the cross texture from the XOR puzzle as the reference
-        int texSize = 256;
-        Texture2D refTex = ShapeMatchPuzzle.GenerateCrossTexture(texSize);
-        SaveTextureAsAsset(refTex, $"{assetPath}/Shape_Reference.png");
-        Texture2D refTexAsset = AssetDatabase.LoadAssetAtPath<Texture2D>($"{assetPath}/Shape_Reference.png");
-
-        var refMat = new Material(Shader.Find("Standard"));
-        refMat.mainTexture = refTexAsset;
-        refMat.SetFloat("_Glossiness", 0f);
-        AssetDatabase.CreateAsset(refMat, $"{assetPath}/Mat_Shape_Reference.mat");
-        refImage.GetComponent<Renderer>().sharedMaterial = refMat;
-
-        // --- Label above reference: "Match this shape" ---
-        GameObject labelObj = new GameObject("ReferenceLabel");
+        // --- Instruction label ---
+        GameObject labelObj = new GameObject("InstructionLabel");
         labelObj.transform.SetParent(table.transform, false);
-        labelObj.transform.localPosition = new Vector3(-0.25f, 0.52f, 0.38f);
+        labelObj.transform.localPosition = new Vector3(0f, 0.52f, 0.35f);
         labelObj.transform.localRotation = Quaternion.Euler(90f, 0, 0);
-        labelObj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        labelObj.transform.localScale = new Vector3(0.008f, 0.008f, 0.008f);
         var tm = labelObj.AddComponent<TextMesh>();
-        tm.text = "MATCH THIS SHAPE";
+        tm.text = "DRAG THE SHAPE YOU FOUND\nONTO THE GREEN ZONE";
         tm.fontSize = 32;
         tm.characterSize = 0.5f;
         tm.anchor = TextAnchor.MiddleCenter;
@@ -371,6 +349,7 @@ public class XORPuzzleCreator : EditorWindow
         tm.color = Color.white;
 
         // --- Three shape cards ---
+        int texSize = 256;
         Texture2D crossTex = ShapeMatchPuzzle.GenerateCrossTexture(texSize);
         Texture2D circleTex = ShapeMatchPuzzle.GenerateCircleTexture(texSize);
         Texture2D triangleTex = ShapeMatchPuzzle.GenerateTriangleTexture(texSize);
@@ -387,11 +366,11 @@ public class XORPuzzleCreator : EditorWindow
         float[] xPositions = { -0.3f, 0f, 0.3f };
         ShuffleArray(xPositions);
 
-        GameObject cardCross = CreateShapeCard(table, "Card_Cross", crossTexAsset,
+        GameObject cardCross = CreateShapeCard(puzzleRoot, table, "Card_Cross", crossTexAsset,
             new Vector3(xPositions[0], 0.52f, -0.25f), ShapeCard.Shape.Cross, assetPath, "Mat_Card_Cross");
-        GameObject cardCircle = CreateShapeCard(table, "Card_Circle", circleTexAsset,
+        GameObject cardCircle = CreateShapeCard(puzzleRoot, table, "Card_Circle", circleTexAsset,
             new Vector3(xPositions[1], 0.52f, -0.25f), ShapeCard.Shape.Circle, assetPath, "Mat_Card_Circle");
-        GameObject cardTriangle = CreateShapeCard(table, "Card_Triangle", triangleTexAsset,
+        GameObject cardTriangle = CreateShapeCard(puzzleRoot, table, "Card_Triangle", triangleTexAsset,
             new Vector3(xPositions[2], 0.52f, -0.25f), ShapeCard.Shape.Triangle, assetPath, "Mat_Card_Triangle");
 
         // --- ShapeMatchPuzzle component ---
@@ -400,6 +379,7 @@ public class XORPuzzleCreator : EditorWindow
         puzzle.PuzzleDescription = "Identify the shape revealed by the XOR decode and drag it to the answer zone.";
         puzzle.Table = tableScript;
         puzzle.AnswerZone = answerZone.transform;
+        puzzle.LinkedXORPuzzle = puzzleRoot.GetComponent<XORPuzzle>();
         puzzle.Cards = new ShapeCard[]
         {
             cardCross.GetComponent<ShapeCard>(),
@@ -408,15 +388,20 @@ public class XORPuzzleCreator : EditorWindow
         };
     }
 
-    private static GameObject CreateShapeCard(GameObject tableParent, string name, Texture2D tex,
-        Vector3 localPos, ShapeCard.Shape shape, string assetPath, string matName)
+    private static GameObject CreateShapeCard(GameObject puzzleRoot, GameObject tableParent, string name, Texture2D tex,
+        Vector3 localPosOnTable, ShapeCard.Shape shape, string assetPath, string matName)
     {
+        // Compute world position as if the card were a child of the table,
+        // but parent to puzzleRoot so the non-uniform table scale doesn't
+        // crush the card's collider.
+        Vector3 worldPos = tableParent.transform.TransformPoint(localPosOnTable);
+
         GameObject card = GameObject.CreatePrimitive(PrimitiveType.Quad);
         card.name = name;
-        card.transform.SetParent(tableParent.transform, false);
-        card.transform.localPosition = localPos;
-        card.transform.localRotation = Quaternion.Euler(90f, 0, 0);
-        card.transform.localScale = new Vector3(0.18f, 0.18f, 1f);
+        card.transform.SetParent(puzzleRoot.transform, false);
+        card.transform.position = worldPos;
+        card.transform.rotation = tableParent.transform.rotation * Quaternion.Euler(90f, 0, 0);
+        card.transform.localScale = new Vector3(0.18f, 0.18f, 0.01f);
         card.layer = 6;
 
         // Replace MeshCollider with BoxCollider for drag detection

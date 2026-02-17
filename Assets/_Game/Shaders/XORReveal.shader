@@ -28,6 +28,7 @@ Shader "Custom/XORReveal"
             
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
+            ZTest Always
             Cull Off
 
             HLSLPROGRAM
@@ -63,6 +64,7 @@ Shader "Custom/XORReveal"
             float4 _UVLightDirection;
             float _UVLightAngle;
             float _UVLightEnabled;
+            float _SheetsOverlapping;
 
             Varyings vert (Attributes v)
             {
@@ -75,24 +77,33 @@ Shader "Custom/XORReveal"
 
             half4 frag (Varyings i) : SV_Target
             {
-                // Sample both textures using the same UVs
                 half4 keyCol = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 half4 encCol = SAMPLE_TEXTURE2D(_EncryptedTex, sampler_EncryptedTex, i.uv);
                 
                 // XOR decode: for binary B/W textures abs(a - b) = XOR
                 half3 decoded = abs(encCol.rgb - keyCol.rgb);
 
-                // UV light cone masking
-                float3 lightToPixel = normalize(i.worldPos - _UVLightPosition.xyz);
-                float dotProd = dot(lightToPixel, _UVLightDirection.xyz);
-                float attenuation = smoothstep(_UVLightAngle - _RevealSharpness, _UVLightAngle + _RevealSharpness, dotProd);
+                // UV light cone + distance
                 float dist = distance(i.worldPos, _UVLightPosition.xyz);
-                float distFactor = saturate(1.0 - dist / 10.0);
-                float lightResult = saturate(attenuation * distFactor * _UVLightEnabled);
+                float distFactor = saturate(1.0 - dist / 3.0);
+
+                // Cone attenuation — only applied when light direction is meaningful
+                float3 lightToPixel = normalize(i.worldPos - _UVLightPosition.xyz);
+                float dotProd = dot(lightToPixel, normalize(_UVLightDirection.xyz));
+                float coneEdge = _RevealSharpness * 2.0;
+                float attenuation = smoothstep(_UVLightAngle - coneEdge, _UVLightAngle + coneEdge, dotProd);
+
+                float uvCone = saturate(attenuation * distFactor * _UVLightEnabled);
+
+                // Without overlap: show the encrypted texture under UV light
+                // With overlap:    show the XOR-decoded secret shape under UV light
+                half3 noOverlapCol = encCol.rgb * _Color.rgb;
+                half3 overlapCol   = decoded * _Color.rgb;
+                half3 finalRGB     = lerp(noOverlapCol, overlapCol, _SheetsOverlapping);
 
                 half4 result;
-                result.rgb = decoded * _Color.rgb;
-                result.a = lightResult;
+                result.rgb = finalRGB;
+                result.a   = uvCone;
                 
                 return result;
             }
@@ -112,6 +123,7 @@ Shader "Custom/XORReveal"
         {
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
+            ZTest Always
             Cull Off
 
             CGPROGRAM
@@ -143,6 +155,7 @@ Shader "Custom/XORReveal"
             float4 _UVLightDirection;
             float _UVLightAngle;
             float _UVLightEnabled;
+            float _SheetsOverlapping;
 
             v2f vert (appdata v)
             {
@@ -155,7 +168,6 @@ Shader "Custom/XORReveal"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // Sample both textures using the same UVs
                 fixed4 keyCol = tex2D(_MainTex, i.uv);
                 fixed4 encCol = tex2D(_EncryptedTex, i.uv);
                 
@@ -164,17 +176,27 @@ Shader "Custom/XORReveal"
                 // decoded   = encrypted XOR key = secret
                 fixed3 decoded = abs(encCol.rgb - keyCol.rgb);
 
-                // UV light cone masking
-                float3 lightToPixel = normalize(i.worldPos.xyz - _UVLightPosition.xyz);
-                float dotProd = dot(lightToPixel, _UVLightDirection.xyz);
-                float attenuation = smoothstep(_UVLightAngle - _RevealSharpness, _UVLightAngle + _RevealSharpness, dotProd);
+                // UV light cone + distance
                 float dist = distance(i.worldPos.xyz, _UVLightPosition.xyz);
-                float distFactor = saturate(1.0 - dist / 10.0);
-                float lightResult = saturate(attenuation * distFactor * _UVLightEnabled);
+                float distFactor = saturate(1.0 - dist / 3.0);
+
+                // Cone attenuation — only applied when light direction is meaningful
+                float3 lightToPixel = normalize(i.worldPos.xyz - _UVLightPosition.xyz);
+                float dotProd = dot(lightToPixel, normalize(_UVLightDirection.xyz));
+                float coneEdge = _RevealSharpness * 2.0;
+                float attenuation = smoothstep(_UVLightAngle - coneEdge, _UVLightAngle + coneEdge, dotProd);
+
+                float uvCone = saturate(attenuation * distFactor * _UVLightEnabled);
+
+                // Without overlap: show the encrypted texture under UV light
+                // With overlap:    show the XOR-decoded secret shape under UV light
+                fixed3 noOverlapCol = encCol.rgb * _Color.rgb;
+                fixed3 overlapCol   = decoded * _Color.rgb;
+                fixed3 finalRGB     = lerp(noOverlapCol, overlapCol, _SheetsOverlapping);
 
                 fixed4 result;
-                result.rgb = decoded * _Color.rgb;
-                result.a = lightResult;
+                result.rgb = finalRGB;
+                result.a   = uvCone;
                 
                 return result;
             }
