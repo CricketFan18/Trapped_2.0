@@ -21,21 +21,24 @@ public class Puzzle_MSTNetwork : MonoBehaviour
     private List<EdgeUI> removedEdgeHistory = new();
 
     private float playerTotalCost;
-    private int targetMSTWeight;
+    private int trueMinimumWeight; // Dynamically calculated
 
     private void Start()
     {
         SetupUI();
-        SpawnUltraSpacedNodes(); // Maximum spacing while holding the structure
+        SpawnUltraSpacedNodes();
         GenerateFixedGraph();
-        CalculateHiddenTarget();
+
+        // NEW: Dynamically calculate the MST of the graph we just built
+        trueMinimumWeight = CalculateTrueMSTWeight();
+
         feedbackText.gameObject.SetActive(false);
     }
 
     private void SetupUI()
     {
         instructionText.text = "<b>SYSTEM STATUS:</b> Redundant Connections Detected.\n" +
-                               "<size=22>Prune the network to stabilize the signal.</size>";
+                               "<size=22>Prune the network to achieve maximum signal efficiency.</size>";
     }
 
     private void SpawnUltraSpacedNodes()
@@ -43,26 +46,19 @@ public class Puzzle_MSTNetwork : MonoBehaviour
         foreach (Transform child in nodeContainer) Destroy(child.gameObject);
         allNodes.Clear();
 
-        // Structural coordinates from your image
         Vector2[] basePositions = new Vector2[]
         {
-            new Vector2(-3.5f, -1.5f), // Node 0
-            new Vector2(-3.5f, 1.0f),  // Node 1
-            new Vector2(-1.5f, 0.5f),  // Node 2
-            new Vector2(-1.0f, 2.0f),  // Node 3
-            new Vector2(0.0f, -0.5f),  // Node 4
-            new Vector2(1.0f, 1.8f),   // Node 5
-            new Vector2(1.2f, 0.5f),   // Node 6
-            new Vector2(4.0f, -1.5f)   // Node 7
+            new Vector2(-3.5f, -1.5f), new Vector2(-3.5f, 1.0f),
+            new Vector2(-1.5f, 0.5f),  new Vector2(-1.0f, 2.0f),
+            new Vector2(0.0f, -0.5f),  new Vector2(1.0f, 1.8f),
+            new Vector2(1.2f, 0.5f),   new Vector2(4.0f, -1.5f)
         };
 
-        // Spacing factor increased to 180 for maximum spread
         float spacingFactor = 180f;
 
         for (int i = 0; i < basePositions.Length; i++)
         {
             Vector2 spacedPos = basePositions[i] * spacingFactor;
-
             GameObject obj = Instantiate(nodePrefab, nodeContainer);
             NodeUI node = obj.GetComponent<NodeUI>();
             node.Initialize(i);
@@ -73,7 +69,6 @@ public class Puzzle_MSTNetwork : MonoBehaviour
 
     private void GenerateFixedGraph()
     {
-        // Connectivity exactly matches your provided graph image
         int[,] edges = new int[,] {
             {0, 1, 25}, {0, 2, 30}, {0, 4, 50}, {0, 7, 95},
             {1, 2, 20}, {1, 3, 35},
@@ -88,6 +83,29 @@ public class Puzzle_MSTNetwork : MonoBehaviour
         {
             CreateEdge(allNodes[edges[i, 0]], allNodes[edges[i, 1]], edges[i, 2]);
         }
+    }
+
+    // --- NEW: KRUSKAL'S ALGORITHM TO FIND TRUE MST WEIGHT ---
+    private int CalculateTrueMSTWeight()
+    {
+        List<EdgeUI> sortedEdges = allInitialEdges.OrderBy(e => e.Cost).ToList();
+        List<HashSet<int>> clusters = new List<HashSet<int>>();
+        for (int i = 0; i < allNodes.Count; i++) clusters.Add(new HashSet<int> { i });
+
+        float mstSum = 0;
+        foreach (var edge in sortedEdges)
+        {
+            var setA = clusters.Find(c => c.Contains(edge.NodeA.NodeIndex));
+            var setB = clusters.Find(c => c.Contains(edge.NodeB.NodeIndex));
+
+            if (setA != setB)
+            {
+                mstSum += edge.Cost;
+                setA.UnionWith(setB);
+                clusters.Remove(setB);
+            }
+        }
+        return Mathf.RoundToInt(mstSum);
     }
 
     private void CreateEdge(NodeUI a, NodeUI b, float weight)
@@ -122,7 +140,6 @@ public class Puzzle_MSTNetwork : MonoBehaviour
         t.fontSize = 28;
         t.color = Color.white;
         t.alignment = TextAlignmentOptions.Center;
-        bg.GetComponent<RectTransform>().rotation = Quaternion.identity;
     }
 
     private void DrawLine(RectTransform rect, NodeUI a, NodeUI b)
@@ -141,7 +158,7 @@ public class Puzzle_MSTNetwork : MonoBehaviour
         {
             activeEdges.Remove(edge);
             removedEdgeHistory.Add(edge);
-            edge.gameObject.SetActive(false); // Entirely hidden when pruned
+            edge.gameObject.SetActive(false);
             playerTotalCost -= edge.Cost;
             UpdateCostUI();
         }
@@ -152,7 +169,6 @@ public class Puzzle_MSTNetwork : MonoBehaviour
         if (removedEdgeHistory.Count == 0) return;
         EdgeUI lastRemoved = removedEdgeHistory[removedEdgeHistory.Count - 1];
         removedEdgeHistory.RemoveAt(removedEdgeHistory.Count - 1);
-
         lastRemoved.gameObject.SetActive(true);
         activeEdges.Add(lastRemoved);
         playerTotalCost += lastRemoved.Cost;
@@ -171,26 +187,19 @@ public class Puzzle_MSTNetwork : MonoBehaviour
         UpdateCostUI();
     }
 
-    private void CalculateHiddenTarget()
-    {
-        // 180 is the MST sum for your specific answer image
-        targetMSTWeight = 180;
-    }
-
     public void OnConfirmPressed()
     {
         feedbackText.gameObject.SetActive(true);
         bool connected = CheckConnectivity();
-        bool hasCycles = activeEdges.Count != 7;
-        int currentWeight = (int)playerTotalCost;
+        bool isTree = activeEdges.Count == (allNodes.Count - 1);
+        int currentWeight = Mathf.RoundToInt(playerTotalCost);
 
-        // Vague feedback to keep the "MST" goal a puzzle
         if (!connected)
             ShowFeedback("<b>STABILIZATION FAILED:</b> Network is fragmented.");
-        else if (hasCycles)
-            ShowFeedback("<b>STABILIZATION FAILED:</b> Loops detected in the signal path.");
-        else if (currentWeight > targetMSTWeight)
-            ShowFeedback($"<b>STABILIZATION FAILED:</b> Signal efficiency is too low.");
+        else if (!isTree)
+            ShowFeedback("<b>STABILIZATION FAILED:</b> Signal interference (Cycles) detected.");
+        else if (currentWeight > trueMinimumWeight)
+            ShowFeedback($"<b>STABILIZATION FAILED:</b> Efficiency too low. Current: {currentWeight}. Min possible: {trueMinimumWeight}");
         else
             ShowFeedback("<color=#00FF88>SYSTEM STABILIZED:</color>\nOptimal Efficiency Reached.");
     }
@@ -211,10 +220,10 @@ public class Puzzle_MSTNetwork : MonoBehaviour
                 if (n != null && !visited.Contains(n)) { visited.Add(n); q.Enqueue(n); }
             }
         }
-        return visited.Count == 8;
+        return visited.Count == allNodes.Count;
     }
 
-    private void UpdateCostUI() => costText.text = $"Energy Load: <color=white>{(int)playerTotalCost}</color>";
+    private void UpdateCostUI() => costText.text = $"Energy Load: <color=white>{Mathf.RoundToInt(playerTotalCost)}</color>";
     private void ShowFeedback(string m) { feedbackText.text = m; StopAllCoroutines(); StartCoroutine(HideFeedback()); }
     private IEnumerator HideFeedback() { yield return new WaitForSeconds(5f); feedbackText.gameObject.SetActive(false); }
 }
