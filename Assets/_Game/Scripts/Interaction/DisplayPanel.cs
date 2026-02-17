@@ -16,7 +16,7 @@ public class DisplayPanel : MonoBehaviour,IInteractable
     // Implementation of the Interface Method
     public bool Interact(Interactor interactor)
     {
-        // Simple visual feedback
+        //
         KS_Manager.toggleInventory();
         return true;
     }

@@ -17,6 +17,8 @@ public class knapsackManager : MonoBehaviour
     [SerializeField] private Slider BulkBar;
     [SerializeField] private TextMeshProUGUI StealthValueText;
     [SerializeField] private TextMeshProUGUI BulkValueText;
+    
+    public bool puzzle_completed_flag = false;
     public int items_collected = 0;
 
     public float infoDisplay_start = 0f;
@@ -42,6 +44,7 @@ public class knapsackManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
+                
                 
                 toggleInventory();
             }
@@ -96,6 +99,13 @@ public class knapsackManager : MonoBehaviour
         StealthValueText.text = stealthLevel + "%";
         BulkBar.value = (float)bulk;
         BulkValueText.text = bulk + "KG";
+
+        //checking if the player matched the win condition
+        if(stealthLevel >= 95 && items_collected >= 10 && bulk < 50)
+        {
+            //player wins
+            puzzle_completed();
+        }
     }
 
     private void checkBulkLevel()
@@ -117,5 +127,13 @@ public class knapsackManager : MonoBehaviour
             Debug.Log("Enabling slot: " + item.name);
         }
     }
+
+    public void puzzle_completed()
+    {
+        puzzle_completed_flag = true;
+        inventory.puzzle_completed();
+
+    }
+
 
 }
