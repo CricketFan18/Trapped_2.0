@@ -11,7 +11,7 @@ public class InventorySystem : MonoBehaviour
 
     public GameObject inventoryScreenUI;
     public List<GameObject> slotList = new List<GameObject>();
-    public List<string> itemList = new List<string>();
+    public List<string> itemList = new List<string>(); // We will sync this perfectly now
     private GameObject itemToAdd;
     private int whatSlotToEquip;
     public bool isOpen;
@@ -21,14 +21,8 @@ public class InventorySystem : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
+        if (Instance != null && Instance != this) Destroy(gameObject);
+        else Instance = this;
     }
 
     void Start()
@@ -36,11 +30,18 @@ public class InventorySystem : MonoBehaviour
         isOpen = false;
 
         PopulateSlotList();
+
+        // NEW: Automatically hide the inventory screen when the game starts
+        if (inventoryScreenUI != null)
+        {
+            inventoryScreenUI.SetActive(false);
+        }
     }
 
     private void PopulateSlotList()
     {
         itemIcons.Clear();
+        itemList.Clear(); // Clear names too
 
         Image[] images = inventoryScreenUI.GetComponentsInChildren<UnityEngine.UI.Image>(true);
 
@@ -50,6 +51,7 @@ public class InventorySystem : MonoBehaviour
             {
                 img.enabled = false;
                 itemIcons.Add(img);
+                itemList.Add(""); // FIX: Create an empty string for every single slot
             }
         }
 
@@ -62,26 +64,21 @@ public class InventorySystem : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Debug.Log("i is pressed");
             inventoryScreenUI.SetActive(true);
             isOpen = true;
         }
         else if (Input.GetKeyDown(KeyCode.I) && isOpen)
         {
-            // We replaced the manual code here with a call to our new method
             CloseInventory();
         }
     }
 
-    // NEW METHOD: This is public so your UI Button can see and trigger it!
     public void CloseInventory()
     {
         if (isOpen)
         {
             inventoryScreenUI.SetActive(false);
             isOpen = false;
-
-            // Re-lock the cursor so the player can look around again
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -100,9 +97,9 @@ public class InventorySystem : MonoBehaviour
         itemIcons[slotIndex].sprite = iconSprite;
         itemIcons[slotIndex].enabled = true;
         itemIcons[slotIndex].gameObject.SetActive(true);
-        itemList.Add(itemName);
 
-        //this.transform.DOMove(Vector3.zero, );
+        // FIX: Assign the name to the EXACT same index as the visual icon!
+        itemList[slotIndex] = itemName;
     }
 
     private int FindNextEmptySlot()
@@ -112,8 +109,6 @@ public class InventorySystem : MonoBehaviour
             if (!itemIcons[i].enabled)
                 return i;
         }
-
         return -1;
-
     }
 }
