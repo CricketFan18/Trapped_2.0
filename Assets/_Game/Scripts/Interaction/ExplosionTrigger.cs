@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class ExplosionTrigger : MonoBehaviour
 {
+    float countdown;
     [Header("References")]
     public ParticleSystem explosionFX;
 
     [Header("Trigger Settings")]
-    public string targetTag = "Player";
+    public string targetTag = "Item";
     private bool hasExploded = false;
 
     private void OnTriggerEnter(Collider other)
@@ -21,9 +22,12 @@ public class ExplosionTrigger : MonoBehaviour
 
     void TriggerExplosion()
     {
+        countdown -= Time.deltaTime;
         hasExploded = true;
         explosionFX.Play();
-        Destroy(gameObject, explosionFX.main.duration);
+        Destroy(gameObject);
+        if(countdown <= 0)
+            explosionFX.Stop();
     }
 
 

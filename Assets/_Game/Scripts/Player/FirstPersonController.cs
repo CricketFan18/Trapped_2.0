@@ -66,6 +66,9 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
+<<<<<<< HEAD
+        if (GameManager.Instance.IsGamePaused || InventorySystem.Instance.isOpen) return;
+=======
         if (GameManager.Instance != null && GameManager.Instance.IsGamePaused) return;
 
         if (IsFocused)
@@ -73,6 +76,7 @@ public class FirstPersonController : MonoBehaviour
             UpdateFocusMode();
             return;
         }
+>>>>>>> main
 
         // 1. Calculate Movement (Local Space)
         Vector3 forward = transform.TransformDirection(Vector3.forward);
