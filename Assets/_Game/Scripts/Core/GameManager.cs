@@ -55,6 +55,11 @@ public class GameManager : MonoBehaviour
         // UIManager.Instance.ShowGameOver(); // We will add this later
     }
 
+    public void TimePenalty(float time)
+    {
+        CurrentTime-=time;
+    }
+
     public void WinGame()
     {
         HasEscaped = true;
