@@ -91,12 +91,12 @@ public class FirstPersonController : MonoBehaviour
         float curSpeedY = (isSprinting ? SprintSpeed : WalkSpeed) * Input.GetAxis("Horizontal");
 
         if(_stepTimer > 0) _stepTimer -= Time.deltaTime;
-        else if (_characterController.velocity.magnitude > 0.1f)
-        {
-            audioSource.clip = footstepsAudioClips[Random.Range(0, footstepsAudioClips.Count)];
-            audioSource.Play();
-            _stepTimer = stepTimer;
-        }
+        //else if (_characterController.velocity.magnitude > 0.1f)
+        //{
+        //    audioSource.clip = footstepsAudioClips[Random.Range(0, footstepsAudioClips.Count)];
+        //    audioSource.Play();
+        //    _stepTimer = stepTimer;
+        //}
         
         float movementDirectionY = _moveDirection.y;
         _moveDirection = (forward * curSpeedX) + (right * curSpeedY);

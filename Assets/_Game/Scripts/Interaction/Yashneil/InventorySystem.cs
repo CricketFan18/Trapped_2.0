@@ -11,7 +11,7 @@ public class InventorySystem : MonoBehaviour
 
     public GameObject inventoryScreenUI;
     public List<GameObject> slotList = new List<GameObject>();
-    public List<string> itemList = new List<string>(); // We will sync this perfectly now
+    public List<string> itemList = new List<string>();
     private GameObject itemToAdd;
     private int whatSlotToEquip;
     public bool isOpen;
@@ -28,10 +28,9 @@ public class InventorySystem : MonoBehaviour
     void Start()
     {
         isOpen = false;
-
         PopulateSlotList();
 
-        // NEW: Automatically hide the inventory screen when the game starts
+        // Automatically hide the inventory screen when the game starts
         if (inventoryScreenUI != null)
         {
             inventoryScreenUI.SetActive(false);
@@ -41,7 +40,7 @@ public class InventorySystem : MonoBehaviour
     private void PopulateSlotList()
     {
         itemIcons.Clear();
-        itemList.Clear(); // Clear names too
+        itemList.Clear();
 
         Image[] images = inventoryScreenUI.GetComponentsInChildren<UnityEngine.UI.Image>(true);
 
@@ -51,27 +50,15 @@ public class InventorySystem : MonoBehaviour
             {
                 img.enabled = false;
                 itemIcons.Add(img);
-                itemList.Add(""); // FIX: Create an empty string for every single slot
+                itemList.Add(""); // Create an empty string for every single slot
             }
         }
 
         Debug.Log("Item icon slots found: " + itemIcons.Count);
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.I) && !isOpen)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            inventoryScreenUI.SetActive(true);
-            isOpen = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.I) && isOpen)
-        {
-            CloseInventory();
-        }
-    }
+    // The Update method that checked for Input.GetKeyDown(KeyCode.I) has been removed.
+    // The player can no longer open this manually.
 
     public void CloseInventory()
     {
@@ -98,7 +85,7 @@ public class InventorySystem : MonoBehaviour
         itemIcons[slotIndex].enabled = true;
         itemIcons[slotIndex].gameObject.SetActive(true);
 
-        // FIX: Assign the name to the EXACT same index as the visual icon!
+        // Assign the name to the EXACT same index as the visual icon
         itemList[slotIndex] = itemName;
     }
 

@@ -10,16 +10,17 @@ public class CraftingSystem : MonoBehaviour
     [Header("UI References")]
     public GameObject craftingUIPanel;
     public RectTransform inventoryRectTransform;
-    public GameObject inventoryCloseButton;
-
-    [Header("Optional: Drag your Crafting Close Button here")]
     public Button craftingCloseButton;
+    public GameObject craftButtonUI;
+
+    [Header("Feedback Messages")]
+    public GameObject failMessageUI;
+    public GameObject insufficientMessageUI;
+    public GameObject successMessageUI; // NEW: Drag your green "Success!" text here
 
     [Header("Crafting Setup")]
     public CraftingSlot[] inputSlots;
-
-    [Tooltip("Drag the Parent GameObject of your Result Slot here")]
-    public Transform resultSlot; // CHANGED to Transform so it acts as a physical container
+    public Transform resultSlot; // The dark Armed C4 background box
     public Sprite c4ResultSprite;
 
     [Header("Position Settings")]
@@ -28,8 +29,8 @@ public class CraftingSystem : MonoBehaviour
     private float originalXPosition;
     public bool isCraftingActive = false;
 
-    // THE TEMPORARY BLOCK
     public Dictionary<GameObject, Transform> temporaryItemStorage = new Dictionary<GameObject, Transform>();
+
     private readonly string[] c4Recipe = { "Casing", "Battery", "Timer", "Detonator", "Wires", "Mercury Switch" };
 
     private void Awake()
@@ -42,6 +43,14 @@ public class CraftingSystem : MonoBehaviour
     {
         if (inventoryRectTransform != null) originalXPosition = inventoryRectTransform.anchoredPosition.x;
         craftingUIPanel.SetActive(false);
+
+        if (failMessageUI != null) failMessageUI.SetActive(false);
+        if (insufficientMessageUI != null) insufficientMessageUI.SetActive(false);
+        if (successMessageUI != null) successMessageUI.SetActive(false);
+
+        // DEFAULT STATE: Hide the result box, Show the craft button
+        if (resultSlot != null) resultSlot.gameObject.SetActive(false);
+        if (craftButtonUI != null) craftButtonUI.SetActive(true);
 
         if (craftingCloseButton != null)
             craftingCloseButton.onClick.AddListener(CloseCraftingStation);
@@ -57,32 +66,9 @@ public class CraftingSystem : MonoBehaviour
             CloseCraftingStation();
     }
 
-    public void OpenCraftingStation()
-    {
-        if (isCraftingActive) return;
+    public void OnItemPlaced() { }
 
-        isCraftingActive = true;
-        craftingUIPanel.SetActive(true);
-        if (inventoryCloseButton != null) inventoryCloseButton.SetActive(false);
-
-        if (InventorySystem.Instance != null && !InventorySystem.Instance.isOpen)
-        {
-            InventorySystem.Instance.isOpen = true;
-            if (InventorySystem.Instance.inventoryScreenUI != null)
-                InventorySystem.Instance.inventoryScreenUI.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
-        if (inventoryRectTransform != null)
-        {
-            Vector2 pos = inventoryRectTransform.anchoredPosition;
-            pos.x = originalXPosition + shiftedXPosition;
-            inventoryRectTransform.anchoredPosition = pos;
-        }
-    }
-
-    public void OnItemPlaced()
+    public void TryCraft()
     {
         int count = 0;
         for (int i = 0; i < inputSlots.Length; i++)
@@ -90,7 +76,14 @@ public class CraftingSystem : MonoBehaviour
             if (inputSlots[i] != null && inputSlots[i].transform.childCount > 0) count++;
         }
 
-        if (count == 6) CheckRecipe();
+        if (count < 6)
+        {
+            if (insufficientMessageUI != null) StartCoroutine(ShowMessageRoutine(insufficientMessageUI));
+        }
+        else
+        {
+            CheckRecipe();
+        }
     }
 
     private void CheckRecipe()
@@ -107,6 +100,13 @@ public class CraftingSystem : MonoBehaviour
 
         if (isCorrect)
         {
+            // --- SUCCESS ---
+            if (successMessageUI != null) StartCoroutine(ShowMessageRoutine(successMessageUI));
+
+            // Show the result box, Hide the craft button!
+            if (resultSlot != null) resultSlot.gameObject.SetActive(true);
+            if (craftButtonUI != null) craftButtonUI.SetActive(false);
+
             GameObject c4Item = null;
 
             for (int i = 0; i < inputSlots.Length; i++)
@@ -117,33 +117,30 @@ public class CraftingSystem : MonoBehaviour
 
                     if (c4Item == null)
                     {
-                        // 1. TRANSMUTE the first ingredient into the physical Armed C4
                         c4Item = item;
                         Image img = c4Item.GetComponent<Image>();
                         if (img != null && InventorySystem.Instance != null)
                         {
                             int idx = InventorySystem.Instance.itemIcons.IndexOf(img);
-                            // Register the new name in the inventory data
                             if (idx >= 0) InventorySystem.Instance.itemList[idx] = "Armed C4";
-
                             img.sprite = c4ResultSprite;
                             img.enabled = true;
                         }
 
-                        // 2. Move it to the Result Slot
                         if (resultSlot != null)
                         {
                             c4Item.transform.SetParent(resultSlot);
+                            c4Item.transform.SetAsLastSibling(); // Ensures C4 renders on top of the dark box
+
+                            RectTransform r = c4Item.GetComponent<RectTransform>();
+                            if (r != null) { r.anchoredPosition = Vector2.zero; r.localScale = Vector3.one; }
                             c4Item.transform.localPosition = Vector3.zero;
-                            c4Item.transform.localScale = Vector3.one;
                         }
 
-                        // Unlink it from the auto-return memory so it doesn't get ripped out of your hands
                         temporaryItemStorage.Remove(c4Item);
                     }
                     else
                     {
-                        // 3. CONSUME the other 5 ingredients invisibly (protects inventory capacity)
                         Image img = item.GetComponent<Image>();
                         if (img != null && InventorySystem.Instance != null)
                         {
@@ -153,12 +150,12 @@ public class CraftingSystem : MonoBehaviour
                             img.enabled = false;
                         }
 
-                        // Send the empty ghosts back to their homes silently
                         if (temporaryItemStorage.TryGetValue(item, out Transform home) && home != null)
                         {
                             item.transform.SetParent(home);
+                            RectTransform r = item.GetComponent<RectTransform>();
+                            if (r != null) { r.anchoredPosition = Vector2.zero; r.localScale = Vector3.one; }
                             item.transform.localPosition = Vector3.zero;
-                            item.transform.localScale = Vector3.one;
                         }
                         temporaryItemStorage.Remove(item);
                     }
@@ -168,8 +165,17 @@ public class CraftingSystem : MonoBehaviour
         }
         else
         {
+            // --- FAILED ---
+            if (failMessageUI != null) StartCoroutine(ShowMessageRoutine(failMessageUI));
             ResetIngredients();
         }
+    }
+
+    private System.Collections.IEnumerator ShowMessageRoutine(GameObject messageUI)
+    {
+        messageUI.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        if (messageUI != null) messageUI.SetActive(false);
     }
 
     public void ResetIngredients()
@@ -180,12 +186,10 @@ public class CraftingSystem : MonoBehaviour
             Transform[] allUI = InventorySystem.Instance.inventoryScreenUI.GetComponentsInChildren<Transform>(true);
             foreach (Transform t in allUI)
             {
-                if (t.CompareTag("Slot") && t.GetComponent<CraftingSlot>() == null)
-                    invSlots.Add(t);
+                if (t.CompareTag("Slot") && t.GetComponent<CraftingSlot>() == null) invSlots.Add(t);
             }
         }
 
-        // 1. Return all active ingredients
         for (int i = 0; i < inputSlots.Length; i++)
         {
             CraftingSlot slot = inputSlots[i];
@@ -205,12 +209,7 @@ public class CraftingSystem : MonoBehaviour
                 {
                     foreach (Transform invSlot in invSlots)
                     {
-                        if (invSlot.childCount == 0)
-                        {
-                            item.SetParent(invSlot);
-                            placed = true;
-                            break;
-                        }
+                        if (invSlot.childCount == 0) { item.SetParent(invSlot); placed = true; break; }
                     }
                 }
 
@@ -218,16 +217,18 @@ public class CraftingSystem : MonoBehaviour
                     item.SetParent(InventorySystem.Instance.inventoryScreenUI.transform);
 
                 RectTransform rect = item.GetComponent<RectTransform>();
-                if (rect != null) { rect.anchoredPosition = Vector2.zero; rect.localScale = Vector3.one; }
+                if (rect != null)
+                {
+                    rect.anchoredPosition = Vector2.zero;
+                    rect.localScale = Vector3.one;
+                }
                 item.localPosition = Vector3.zero;
-                item.localScale = Vector3.one;
 
                 temporaryItemStorage.Remove(item.gameObject);
             }
             if (slot != null) slot.currentItemName = "";
         }
 
-        // 2. NEW: Force grab any abandoned C4 left in the result slot and put it in the inventory
         if (resultSlot != null)
         {
             while (resultSlot.childCount > 0)
@@ -236,19 +237,48 @@ public class CraftingSystem : MonoBehaviour
                 bool placed = false;
                 foreach (Transform invSlot in invSlots)
                 {
-                    if (invSlot.childCount == 0)
-                    {
-                        abandonedC4.SetParent(invSlot);
-                        placed = true;
-                        break;
-                    }
+                    if (invSlot.childCount == 0) { abandonedC4.SetParent(invSlot); placed = true; break; }
                 }
                 if (!placed && InventorySystem.Instance != null)
                     abandonedC4.SetParent(InventorySystem.Instance.inventoryScreenUI.transform);
 
+                RectTransform rect = abandonedC4.GetComponent<RectTransform>();
+                if (rect != null) { rect.anchoredPosition = Vector2.zero; rect.localScale = Vector3.one; }
                 abandonedC4.localPosition = Vector3.zero;
-                abandonedC4.localScale = Vector3.one;
             }
+        }
+
+        // RESET UI STATE
+        if (resultSlot != null) resultSlot.gameObject.SetActive(false);
+        if (craftButtonUI != null) craftButtonUI.SetActive(true);
+    }
+
+    public void OpenCraftingStation()
+    {
+        if (isCraftingActive) return;
+
+        isCraftingActive = true;
+        craftingUIPanel.SetActive(true);
+
+        // ENSURE UI IS IN DEFAULT STATE WHEN OPENED
+        if (resultSlot != null) resultSlot.gameObject.SetActive(false);
+        if (craftButtonUI != null) craftButtonUI.SetActive(true);
+        if (successMessageUI != null) successMessageUI.SetActive(false);
+
+        if (InventorySystem.Instance != null && !InventorySystem.Instance.isOpen)
+        {
+            InventorySystem.Instance.isOpen = true;
+            if (InventorySystem.Instance.inventoryScreenUI != null)
+                InventorySystem.Instance.inventoryScreenUI.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        if (inventoryRectTransform != null)
+        {
+            Vector2 pos = inventoryRectTransform.anchoredPosition;
+            pos.x = originalXPosition + shiftedXPosition;
+            inventoryRectTransform.anchoredPosition = pos;
         }
     }
 
@@ -260,10 +290,10 @@ public class CraftingSystem : MonoBehaviour
 
         isCraftingActive = false;
 
-        if (craftingUIPanel != null && craftingUIPanel.activeSelf)
-            craftingUIPanel.SetActive(false);
-
-        if (inventoryCloseButton != null) inventoryCloseButton.SetActive(true);
+        if (craftingUIPanel != null && craftingUIPanel.activeSelf) craftingUIPanel.SetActive(false);
+        if (failMessageUI != null) failMessageUI.SetActive(false);
+        if (insufficientMessageUI != null) insufficientMessageUI.SetActive(false);
+        if (successMessageUI != null) successMessageUI.SetActive(false);
 
         if (inventoryRectTransform != null)
         {
@@ -272,9 +302,6 @@ public class CraftingSystem : MonoBehaviour
             inventoryRectTransform.anchoredPosition = pos;
         }
 
-        if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen)
-        {
-            InventorySystem.Instance.CloseInventory();
-        }
+        if (InventorySystem.Instance != null && InventorySystem.Instance.isOpen) InventorySystem.Instance.CloseInventory();
     }
 }
