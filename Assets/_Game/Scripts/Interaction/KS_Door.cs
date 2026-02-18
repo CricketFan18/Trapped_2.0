@@ -17,8 +17,8 @@ public class KS_Door : MonoBehaviour,IInteractable
     {
         if (KS_manager.GetComponent<knapsackManager>().stealthLevel >= 95 && KS_manager.items_collected == 10)
         {
-            Debug.Log("Door opened! You escaped the room.");
-            KS_manager.DisplayDoorMsg();
+            KS_manager.puzzle_completed();
+            KS_manager.toggleInventory(); // this will display player the cracked message 
         }
         else
         {

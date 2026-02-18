@@ -10,7 +10,7 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
     public bool isHovered;
     private KS_Item heldItem;
     public bool isBagSlot = false;
-    [SerializeField] private knapsackManager KS_manager;
+    private knapsackManager KS_manager;
     private void Awake()
     {
         KS_manager = FindObjectOfType<knapsackManager>();
@@ -35,7 +35,7 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
         if(heldItem != null)
         {
             //displays item details
-            KS_manager.itemText.text = heldItem.name + "\n" + "Stealth Value: " + heldItem.stealthValue + "\n" + "Bulk Value: " + heldItem.bulkValue;
+            KS_manager.itemText.text =  "\t\t" +heldItem.name + "\n\t\t" + "Stealth Value: " + heldItem.stealthValue + "\n\t\t" + "Bulk Value: " + heldItem.bulkValue;
         }
     }
 
@@ -56,6 +56,7 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
         else
         {
             slotImage.enabled = false;
+            Debug.Log("Slot is empty");
         }
     }
 

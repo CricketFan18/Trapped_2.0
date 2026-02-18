@@ -15,6 +15,10 @@ public class knapsackManager : MonoBehaviour
     public TextMeshProUGUI itemText;
     [SerializeField] private Slider StealthBar;
     [SerializeField] private Slider BulkBar;
+    [SerializeField] private TextMeshProUGUI StealthValueText;
+    [SerializeField] private TextMeshProUGUI BulkValueText;
+    
+    public bool puzzle_completed_flag = false;
     public int items_collected = 0;
 
     public float infoDisplay_start = 0f;
@@ -23,6 +27,7 @@ public class knapsackManager : MonoBehaviour
 
     public GameObject itemContainer;
     public KS_Inventory inventory;
+
     private void Start()
     {
         container.SetActive(false);
@@ -30,32 +35,37 @@ public class knapsackManager : MonoBehaviour
         Cursor.visible = false;
     }
 
-
-
-
     public void Update()
     {
-
-        //Toggle Inventory
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            //container contains the inventory so we toggle it on and off
-            container.SetActive(!container.activeInHierarchy);
-            GameManager.Instance.IsGamePaused = !GameManager.Instance.IsGamePaused;
-            Cursor.lockState = GameManager.Instance.IsGamePaused ? CursorLockMode.None:CursorLockMode.Locked;
-            Cursor.visible = GameManager.Instance.IsGamePaused ? true : false;
-        }
-        checkBulkLevel();
+        //if E is pressed and inventory is open then close inventory
 
         
+        if (container.activeInHierarchy)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                
+                
+                toggleInventory();
+            }
+        }
+
         if (Time.time - infoDisplay_start > 5f)
             showInfo = false;
         
         displayInfo();
+        checkBulkLevel();
     }
 
 
-
+    public void toggleInventory()
+    {
+        //container contains the inventory so we toggle it on and off
+        container.SetActive(!container.activeInHierarchy);
+        GameManager.Instance.IsGamePaused = !GameManager.Instance.IsGamePaused;
+        Cursor.lockState = GameManager.Instance.IsGamePaused ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = GameManager.Instance.IsGamePaused ? true : false;
+    }
 
     //this function will be called when the player tries to interact with the door
     //but doesn't meet the requirements to escape.
@@ -84,17 +94,25 @@ public class knapsackManager : MonoBehaviour
     }
     public void updateStats()
     {
-        StealthBar.value = (float)stealthLevel;
+        //updating the stealth and bulk values based on the items collected
+        StealthBar.value = (float)stealthLevel; 
+        StealthValueText.text = stealthLevel + "%";
         BulkBar.value = (float)bulk;
-        Debug.Log("Stealth Level: " + stealthLevel + "Bulk Level" + bulk);
+        BulkValueText.text = bulk + "KG";
+
+        //checking if the player matched the win condition
+        if(stealthLevel >= 95 && items_collected >= 10 && bulk < 50)
+        {
+            //player wins
+            puzzle_completed();
+        }
     }
 
     private void checkBulkLevel()
     {   if(bulk >= 50)
         {
             Debug.Log("You are too bulky to escape!");
-            items_collected = 0;
-            enableAllItems();
+            inventory.clearBagSlot();
 
         }
     }
@@ -108,7 +126,14 @@ public class knapsackManager : MonoBehaviour
             item.gameObject.SetActive(true);
             Debug.Log("Enabling slot: " + item.name);
         }
-        inventory.clearAllSlots();
     }
+
+    public void puzzle_completed()
+    {
+        puzzle_completed_flag = true;
+        inventory.puzzle_completed();
+
+    }
+
 
 }
