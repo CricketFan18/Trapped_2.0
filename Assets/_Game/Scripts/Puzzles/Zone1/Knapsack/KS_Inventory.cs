@@ -13,13 +13,18 @@ public class KS_Inventory : MonoBehaviour
     public KS_Slot draggedSlot = null;
     private bool isDragging = false;
 
-    private int items_collected = 0;
     private List<KS_Slot> bagSlots = new List<KS_Slot>();
     private List<KS_Slot> inventorySlots = new List<KS_Slot>();
     private List<KS_Slot> allSlots = new List<KS_Slot>();
+
+    [SerializeField] private GameObject bag;
+    [SerializeField] private GameObject inventory;
+    [SerializeField] private GameObject progressBar;
+    [SerializeField] private GameObject puzzle_completeImg;
     private void Awake()
     {
-        draggedSlotImg.enabled = false;
+        draggedSlotImg.enabled = false; //ignore this one
+        puzzle_completeImg.SetActive(false);
         inventorySlots.AddRange(InventoryObj.GetComponentsInChildren<KS_Slot>());
         bagSlots.AddRange(BagObj.GetComponentsInChildren<KS_Slot>());
 
@@ -48,6 +53,7 @@ public class KS_Inventory : MonoBehaviour
     }
 
 
+    //ignore this function for now
     private void updateDragIcon()
     {
         if(isDragging)
@@ -131,11 +137,31 @@ public class KS_Inventory : MonoBehaviour
         }
     }
 
-    public void clearAllSlots()
+
+    public void clearBagSlot()
     {
-        foreach (KS_Slot slot in allSlots)
+        foreach (KS_Slot bag_slot in bagSlots)
         {
-            slot.clearSlot();
+            foreach (KS_Slot inv_slot in inventorySlots)
+            {
+                if(!inv_slot.hasItem())
+                {
+                    inv_slot.set_item(bag_slot.GetItem());
+                    break;
+                }
+                
+            }
+            bag_slot.clearSlot();
         }
     }
+
+    public void puzzle_completed()
+    {
+        
+        bag.SetActive(false);
+        inventory.SetActive(false);
+        progressBar.SetActive(false);
+        puzzle_completeImg.SetActive(true);
+    }
+
 }
