@@ -63,6 +63,7 @@ public class FirstPersonController : MonoBehaviour
         _characterController.Move(_moveDirection * Time.deltaTime);
 
         // 4. Camera Rotation
+        if(Cursor.visible) return;
         _rotationX += -Input.GetAxis("Mouse Y") * MouseSensitivity;
         _rotationX = Mathf.Clamp(_rotationX, -LookXLimit, LookXLimit);
         CameraTransform.localRotation = Quaternion.Euler(_rotationX, 0, 0);

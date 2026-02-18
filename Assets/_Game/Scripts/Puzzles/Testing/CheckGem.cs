@@ -6,8 +6,6 @@ using UnityEngine;
 public class CheckGem : MonoBehaviour, IInteractable
 {
     public string InteractionPrompt => "The counterfeit belongs within";
-    public Transform win;
-    public Transform fail;
     public AudioClip alarmSound;
     private AudioSource audioSource;
 
@@ -23,9 +21,9 @@ public class CheckGem : MonoBehaviour, IInteractable
         {
             if (selectedGem.fake)
             {
-                Destroy(this);
                 Debug.Log("Succeeed");
-                win.gameObject.SetActive(true);
+                //CompletionLogicHere
+                Destroy(this);
             }
             else
             {
