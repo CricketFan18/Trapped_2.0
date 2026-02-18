@@ -2,7 +2,6 @@
 *.cs diff=csharp text
 *.cginc text
 *.shader text
-
 ## Git LFS ##
 # Default: Track all images
 *.jpg filter=lfs diff=lfs merge=lfs -text
@@ -12,9 +11,10 @@
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.tif filter=lfs diff=lfs merge=lfs -text
 *.tga filter=lfs diff=lfs merge=lfs -text
-
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
 # ... [Keep Audio, Video, 3D Models sections same as before] ...
-
 # =======================================================
 # 🛑 EXCEPTIONS (Add this at the bottom)
 # Stop LFS from tracking tiny icons in Plugins/Editor
