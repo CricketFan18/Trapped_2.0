@@ -108,39 +108,4 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("XOR Puzzle Spawned with UV Flashlight");
     }
-
-    // --- Texture Generation Helpers ---
-
-    // ... existing ...
-
-    private Texture2D GenerateNoiseTexture(int size)
-    {
-        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-        tex.filterMode = FilterMode.Point;
-        Color[] cols = new Color[size * size];
-
-        for (int y = 0; y < size; y++)
-        {
-            for (int x = 0; x < size; x++)
-            {
-                // Alignment Hint Borders
-                // If we are at the edge (2 pixels thick)
-                if (x < 4 || x >= size - 4 || y < 4 || y >= size - 4)
-                {
-                    // Force White (1)
-                    cols[y * size + x] = Color.white;
-                }
-                else
-                {
-                    // Binary Noise (0 or 1)
-                    float val = Random.value > 0.5f ? 1f : 0f;
-                    cols[y * size + x] = new Color(val, val, val, 1f);
-                }
-            }
-        }
-
-        tex.SetPixels(cols);
-        tex.Apply();
-        return tex;
-    }
 }
