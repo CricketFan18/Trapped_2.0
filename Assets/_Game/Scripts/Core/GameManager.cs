@@ -53,6 +53,13 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         Debug.Log("GAME OVER: TIME EXPIRED");
         // UIManager.Instance.ShowGameOver(); // We will add this later
+        // 1. Add Score Locally
+        //GameManager.Instance.AddScore(ScoreValue, PuzzleID);
+
+        //// 2. SEND TO GOOGLE
+        //GoogleSheetManager.Instance.LogPuzzleSolve(PuzzleID); // <--- ADD THIS
+
+        //OnPuzzleSolved.Invoke();
     }
 
     public void TimePenalty(float time)
