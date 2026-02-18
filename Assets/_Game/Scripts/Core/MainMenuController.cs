@@ -3,9 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
+    public GameObject HomePanel;
+    public GameObject RegistrationPanel;
     public void StartGame()
     {
-        SceneManager.LoadScene("Main_Game");
+        HomePanel.SetActive(false);
+        RegistrationPanel.SetActive(true);
     }
 
     public void QuitGame()
