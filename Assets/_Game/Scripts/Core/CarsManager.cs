@@ -31,16 +31,10 @@ public class CarsManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            UICanvas.SetActive(true);
-        }
         
         if (countdown <= 0)
         {
-            StopCars();
+            Success();
             countdownText.text = "Success";
         }
         
@@ -70,6 +64,27 @@ public class CarsManager : MonoBehaviour
             carPivots[i].Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
             yield return null;
         }
+    }
+
+    void Success()
+    {
+        gameOver = true;
+        StopAllCoroutines();
+        rotatingCars = 0;
+        for(int i=0; i< rotationRoutine.Length; i++)
+        {
+            rotationRoutine[i] = null;
+        }
+        
+        retryButton.GetComponentInChildren<TextMeshProUGUI>().text = "Next";
+        retryButton.gameObject.SetActive(true);
+        retryButton.onClick.AddListener(() =>
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            //Success Logic Here
+            Destroy(UICanvas);
+        });
     }
 
     public void StopCars()
