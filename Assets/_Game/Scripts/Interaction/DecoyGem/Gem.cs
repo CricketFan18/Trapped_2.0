@@ -19,7 +19,7 @@ public class Gem : MonoBehaviour, IInteractable
     bool IInteractable.Interact(Interactor interactor)
     {
         if (GemManager.instance.holding || GemManager.instance.placeFrame == Time.frameCount) return false;
-        GemManager.instance.placeFrame = Time.frameCount;
+        GemManager.instance.pickupFrame = Time.frameCount;
         Debug.Log(interactor.name + " is holding");
         GetComponent<Rigidbody>().isKinematic = true;
         this.transform.SetParent(interactor.transform);
@@ -49,8 +49,8 @@ public class Gem : MonoBehaviour, IInteractable
         if (Physics.Raycast(ray, out hit, 5f))
         {
             transform.SetParent(null);
-            transform.position = hit.point;
             transform.GetComponent<Rigidbody>().isKinematic = false;
+            transform.position = hit.point;
             GemManager.instance.holding = false;
             GemManager.instance.heldGem = null;
         }
