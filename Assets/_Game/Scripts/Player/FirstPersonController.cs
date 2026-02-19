@@ -85,8 +85,8 @@ public class FirstPersonController : MonoBehaviour
         _moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
         // 2. Apply Gravity 
-        if (!_characterController.isGrounded) { _moveDirection.y = movementDirectionY + (Gravity * Time.deltaTime); }
-
+        if (!_characterController.isGrounded)  { _moveDirection.y = movementDirectionY + (Gravity * Time.deltaTime); }
+        else {_moveDirection.y = -1f;}
         // 3. Move Character
         _characterController.Move(_moveDirection * Time.deltaTime);
 
