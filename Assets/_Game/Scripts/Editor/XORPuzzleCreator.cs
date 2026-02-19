@@ -11,8 +11,7 @@ public class XORPuzzleCreator : EditorWindow
         GameObject puzzleRoot = new GameObject("XOR_Puzzle_Prefab");
 
         XORPuzzle puzzleScript = puzzleRoot.AddComponent<XORPuzzle>();
-        puzzleScript.PuzzleName = "Hidden Message";
-        puzzleScript.PuzzleDescription = "Overlay the UV filter to reveal the code.";
+        puzzleScript.PuzzleID = "Zone1_XOR";
         puzzleScript.SolutionCode = "1234";
 
         // --- Light Table ---
@@ -41,18 +40,14 @@ public class XORPuzzleCreator : EditorWindow
         var tableScript = table.AddComponent<LightTableSurface>();
 
         // --- Camera Focus Point ---
-        // Set world position/rotation BEFORE parenting to avoid non-uniform scale distortion
         GameObject camPivot = new GameObject("CameraFocusPoint");
-        // Table surface top is at world Y = 0.5 + 0.025 = 0.525. Camera 1.2m above that.
         camPivot.transform.position = table.transform.position + Vector3.up * (0.025f + 1.2f);
-        camPivot.transform.rotation = Quaternion.Euler(75f, 0f, 0f); // Look down at table
-        // Parent with worldPositionStays=true so non-uniform table scale doesn't distort
+        camPivot.transform.rotation = Quaternion.Euler(75f, 0f, 0f);
         camPivot.transform.SetParent(table.transform, true);
         tableScript.CameraFocusPoint = camPivot.transform;
 
         // --- Plane A (Message Sheet) ---
         GameObject planeA = CreateSheet(puzzleRoot, "Message_Sheet", new Vector3(-0.25f, 0.56f, 0));
-
         var grabA = planeA.AddComponent<PuzzleSheet>();
         grabA.ObjectName = "Message Sheet";
         grabA.UsePhysics = true;
@@ -60,7 +55,6 @@ public class XORPuzzleCreator : EditorWindow
 
         // --- Plane B (Filter Sheet) ---
         GameObject planeB = CreateSheet(puzzleRoot, "Filter_Sheet", new Vector3(0.25f, 0.56f, 0));
-
         var grabB = planeB.AddComponent<PuzzleSheet>();
         grabB.ObjectName = "Filter Sheet";
         grabB.UsePhysics = true;
@@ -79,7 +73,6 @@ public class XORPuzzleCreator : EditorWindow
         flashMat.color = Color.black;
         flashlight.GetComponent<Renderer>().sharedMaterial = flashMat;
 
-        // Spot Light child — points out the +Z end of the cylinder (top)
         GameObject lightObj = new GameObject("LightSource");
         lightObj.transform.SetParent(flashlight.transform);
         lightObj.transform.localPosition = new Vector3(0, 1.0f, 0);
@@ -111,7 +104,7 @@ public class XORPuzzleCreator : EditorWindow
         // --- Textures & Materials ---
         GenerateAndAssignTextures(planeA, planeB);
 
-        // --- Shape Matching Table (second table) ---
+        // --- Shape Matching Table ---
         CreateShapeMatchTable(puzzleRoot);
 
         // --- Save Prefab ---
@@ -130,11 +123,10 @@ public class XORPuzzleCreator : EditorWindow
         sheet.name = name;
         sheet.transform.SetParent(parent.transform);
         sheet.transform.localPosition = localPos;
-        sheet.transform.localRotation = Quaternion.Euler(90f, 0, 0); // Lay flat face up
+        sheet.transform.localRotation = Quaternion.Euler(90f, 0, 0);
         sheet.transform.localScale = new Vector3(0.4f, 0.3f, 1f);
         sheet.layer = 6;
 
-        // Replace MeshCollider with thin BoxCollider for better physics
         DestroyImmediate(sheet.GetComponent<Collider>());
         var box = sheet.AddComponent<BoxCollider>();
         box.size = new Vector3(1f, 1f, 0.02f);
@@ -179,11 +171,10 @@ public class XORPuzzleCreator : EditorWindow
         AssetDatabase.CreateAsset(matA, $"{assetPath}/Mat_XOR_Message.mat");
         planeA.GetComponent<Renderer>().sharedMaterial = matA;
 
-        Material matB;
         Shader s = Shader.Find("Custom/XORReveal");
         if (s == null) s = Shader.Find("Standard");
 
-        matB = new Material(s);
+        Material matB = new Material(s);
         matB.SetTexture("_MainTex", keyTexAsset);
         matB.SetTexture("_EncryptedTex", encryptedTexAsset);
         matB.renderQueue = 3100;
@@ -198,7 +189,6 @@ public class XORPuzzleCreator : EditorWindow
         File.WriteAllBytes(path, bytes);
         AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
 
-        // Set import settings for crisp binary textures
         TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
         if (importer != null)
         {
@@ -268,16 +258,11 @@ public class XORPuzzleCreator : EditorWindow
         return tex;
     }
 
-    // ?????????????????????????????????????????????????????????????????
-    //  Shape Matching Table
-    // ?????????????????????????????????????????????????????????????????
-
     private static void CreateShapeMatchTable(GameObject puzzleRoot)
     {
         string assetPath = "Assets/_Game/Art/Materials/Generated";
         if (!Directory.Exists(assetPath)) Directory.CreateDirectory(assetPath);
 
-        // --- Table ---
         GameObject table = GameObject.CreatePrimitive(PrimitiveType.Cube);
         table.name = "ShapeTable";
         table.layer = 6;
@@ -301,30 +286,25 @@ public class XORPuzzleCreator : EditorWindow
         var tableScript = table.AddComponent<LightTableSurface>();
         tableScript.InteractionText = "Use Shape Table";
 
-        // Camera focus point
         GameObject camPivot = new GameObject("CameraFocusPoint");
         camPivot.transform.position = table.transform.position + Vector3.up * (0.025f + 1.2f);
         camPivot.transform.rotation = Quaternion.Euler(75f, 0f, 0f);
         camPivot.transform.SetParent(table.transform, true);
         tableScript.CameraFocusPoint = camPivot.transform;
 
-        // --- Answer Zone (visual marker on the table) ---
         GameObject answerZone = GameObject.CreatePrimitive(PrimitiveType.Quad);
         answerZone.name = "AnswerZone";
-        // Position at center-top area of table surface
         answerZone.transform.SetParent(table.transform, false);
         answerZone.transform.localPosition = new Vector3(0f, 0.51f, 0.15f);
         answerZone.transform.localRotation = Quaternion.Euler(90f, 0, 0);
         answerZone.transform.localScale = new Vector3(0.22f, 0.22f, 1f);
-        answerZone.layer = 0; // Not interactable
+        answerZone.layer = 0;
 
-        // Remove collider — it's just a visual marker
         DestroyImmediate(answerZone.GetComponent<Collider>());
 
-        // Dashed-border material for the answer zone
         var zoneMat = new Material(Shader.Find("Standard"));
         zoneMat.color = new Color(0.3f, 1f, 0.3f, 0.4f);
-        zoneMat.SetFloat("_Mode", 3f); // Transparent
+        zoneMat.SetFloat("_Mode", 3f);
         zoneMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         zoneMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         zoneMat.SetInt("_ZWrite", 0);
@@ -334,7 +314,6 @@ public class XORPuzzleCreator : EditorWindow
         zoneMat.renderQueue = 3000;
         answerZone.GetComponent<Renderer>().sharedMaterial = zoneMat;
 
-        // --- Instruction label ---
         GameObject labelObj = new GameObject("InstructionLabel");
         labelObj.transform.SetParent(table.transform, false);
         labelObj.transform.localPosition = new Vector3(0f, 0.52f, 0.35f);
@@ -348,11 +327,10 @@ public class XORPuzzleCreator : EditorWindow
         tm.alignment = TextAlignment.Center;
         tm.color = Color.white;
 
-        // --- Three shape cards ---
         int texSize = 256;
-        Texture2D crossTex = ShapeMatchPuzzle.GenerateCrossTexture(texSize);
-        Texture2D circleTex = ShapeMatchPuzzle.GenerateCircleTexture(texSize);
-        Texture2D triangleTex = ShapeMatchPuzzle.GenerateTriangleTexture(texSize);
+        Texture2D crossTex = GenerateCrossTexture(texSize);
+        Texture2D circleTex = GenerateCircleTexture(texSize);
+        Texture2D triangleTex = GenerateTriangleTexture(texSize);
 
         SaveTextureAsAsset(crossTex, $"{assetPath}/Shape_Cross.png");
         SaveTextureAsAsset(circleTex, $"{assetPath}/Shape_Circle.png");
@@ -362,7 +340,6 @@ public class XORPuzzleCreator : EditorWindow
         Texture2D circleTexAsset = AssetDatabase.LoadAssetAtPath<Texture2D>($"{assetPath}/Shape_Circle.png");
         Texture2D triangleTexAsset = AssetDatabase.LoadAssetAtPath<Texture2D>($"{assetPath}/Shape_Triangle.png");
 
-        // Randomize card positions — shuffle the X offsets
         float[] xPositions = { -0.3f, 0f, 0.3f };
         ShuffleArray(xPositions);
 
@@ -373,10 +350,8 @@ public class XORPuzzleCreator : EditorWindow
         GameObject cardTriangle = CreateShapeCard(puzzleRoot, table, "Card_Triangle", triangleTexAsset,
             new Vector3(xPositions[2], 0.52f, -0.25f), ShapeCard.Shape.Triangle, assetPath, "Mat_Card_Triangle");
 
-        // --- ShapeMatchPuzzle component ---
         var puzzle = puzzleRoot.AddComponent<ShapeMatchPuzzle>();
-        puzzle.PuzzleName = "Shape Match";
-        puzzle.PuzzleDescription = "Identify the shape revealed by the XOR decode and drag it to the answer zone.";
+        puzzle.PuzzleID = "Zone1_ShapeMatch";
         puzzle.Table = tableScript;
         puzzle.AnswerZone = answerZone.transform;
         puzzle.LinkedXORPuzzle = puzzleRoot.GetComponent<XORPuzzle>();
@@ -391,9 +366,6 @@ public class XORPuzzleCreator : EditorWindow
     private static GameObject CreateShapeCard(GameObject puzzleRoot, GameObject tableParent, string name, Texture2D tex,
         Vector3 localPosOnTable, ShapeCard.Shape shape, string assetPath, string matName)
     {
-        // Compute world position as if the card were a child of the table,
-        // but parent to puzzleRoot so the non-uniform table scale doesn't
-        // crush the card's collider.
         Vector3 worldPos = tableParent.transform.TransformPoint(localPosOnTable);
 
         GameObject card = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -404,7 +376,6 @@ public class XORPuzzleCreator : EditorWindow
         card.transform.localScale = new Vector3(0.18f, 0.18f, 0.01f);
         card.layer = 6;
 
-        // Replace MeshCollider with BoxCollider for drag detection
         DestroyImmediate(card.GetComponent<Collider>());
         var box = card.AddComponent<BoxCollider>();
         box.size = new Vector3(1f, 1f, 0.02f);
@@ -415,19 +386,16 @@ public class XORPuzzleCreator : EditorWindow
         rb.isKinematic = true;
         rb.useGravity = false;
 
-        // Material
         var mat = new Material(Shader.Find("Standard"));
         mat.mainTexture = tex;
         mat.SetFloat("_Glossiness", 0f);
 
         string matPath = $"{assetPath}/{matName}.mat";
-        // Avoid overwrite errors
         if (AssetDatabase.LoadAssetAtPath<Material>(matPath) != null)
             AssetDatabase.DeleteAsset(matPath);
         AssetDatabase.CreateAsset(mat, matPath);
         card.GetComponent<Renderer>().sharedMaterial = mat;
 
-        // Components
         var sc = card.AddComponent<ShapeCard>();
         sc.CardShape = shape;
         card.AddComponent<TableDraggable>();
@@ -444,5 +412,89 @@ public class XORPuzzleCreator : EditorWindow
             array[i] = array[j];
             array[j] = temp;
         }
+    }
+
+    // --- Texture Generators relocated to Editor Tool ---
+    private static Texture2D GenerateCrossTexture(int size)
+    {
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        tex.filterMode = FilterMode.Point;
+        Color[] cols = new Color[size * size];
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                bool inVertBar = Mathf.Abs(x - size / 2) < size / 10 && Mathf.Abs(y - size / 2) < size / 3;
+                bool inHorzBar = Mathf.Abs(x - size / 2) < size / 3 && Mathf.Abs(y - size / 2) < size / 10;
+                cols[y * size + x] = (inVertBar || inHorzBar) ? Color.black : Color.white;
+            }
+        }
+        tex.SetPixels(cols);
+        tex.Apply();
+        return tex;
+    }
+
+    private static Texture2D GenerateCircleTexture(int size)
+    {
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        tex.filterMode = FilterMode.Point;
+        Color[] cols = new Color[size * size];
+        float center = size * 0.5f;
+        float outerR = size * 0.35f;
+        float innerR = size * 0.28f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float dx = x - center;
+                float dy = y - center;
+                float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                bool inRing = dist <= outerR && dist >= innerR;
+                cols[y * size + x] = inRing ? Color.black : Color.white;
+            }
+        }
+        tex.SetPixels(cols);
+        tex.Apply();
+        return tex;
+    }
+
+    private static Texture2D GenerateTriangleTexture(int size)
+    {
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        tex.filterMode = FilterMode.Point;
+        Color[] cols = new Color[size * size];
+        float cx = size * 0.5f;
+        int margin = size / 6;
+        int thickness = size / 16;
+
+        Vector2 a = new Vector2(cx, size - margin);
+        Vector2 b = new Vector2(margin, margin);
+        Vector2 c = new Vector2(size - margin, margin);
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                Vector2 p = new Vector2(x, y);
+                bool near = DistToSegment(p, a, b) < thickness
+                         || DistToSegment(p, b, c) < thickness
+                         || DistToSegment(p, c, a) < thickness;
+                cols[y * size + x] = near ? Color.black : Color.white;
+            }
+        }
+        tex.SetPixels(cols);
+        tex.Apply();
+        return tex;
+    }
+
+    private static float DistToSegment(Vector2 p, Vector2 v, Vector2 w)
+    {
+        float l2 = (w - v).sqrMagnitude;
+        if (l2 < 0.001f) return (p - v).magnitude;
+        float t = Mathf.Clamp01(Vector2.Dot(p - v, w - v) / l2);
+        Vector2 proj = v + t * (w - v);
+        return (p - proj).magnitude;
     }
 }
