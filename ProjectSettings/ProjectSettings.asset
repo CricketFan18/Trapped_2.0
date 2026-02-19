@@ -671,7 +671,8 @@ PlayerSettings:
     tvOS: UNITY_POST_PROCESSING_STACK_V2;DOTWEEN
   additionalCompilerArguments: {}
   platformArchitecture: {}
-  scriptingBackend: {}
+  scriptingBackend:
+    Standalone: 0
   il2cppCompilerConfiguration: {}
   il2cppCodeGeneration: {}
   managedStrippingLevel:

@@ -7,6 +7,9 @@ TagManager:
   - Socket
   - Pickup
   - Door
+  - Slot
+  - Item
+  - Bomb
   layers:
   - Default
   - TransparentFX
@@ -19,7 +22,7 @@ TagManager:
   - Ground
   - InvisibleWalls
   - PostProcessing
-  - 
+  - holdLayer
   - 
   - 
   - 
