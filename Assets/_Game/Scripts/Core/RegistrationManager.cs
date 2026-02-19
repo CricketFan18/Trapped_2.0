@@ -64,7 +64,7 @@ public class RegistrationManager : MonoBehaviour
         string p3Roll = string.IsNullOrWhiteSpace(P3RollInput.text) ? "" : P3RollInput.text;
 
         // Send to Google Sheet Manager
-        GoogleSheetManager.Instance.RegisterTeam(
+        SheetManager.Instance.RegisterTeam(
             TeamNameInput.text,
             P1NameInput.text, P1RollInput.text,
             p2Name, p2Roll,

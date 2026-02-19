@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -31,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!IsGamePaused && !HasEscaped && !IsInPuzzleMode)
+        if (!IsGamePaused && !HasEscaped)
         {
             CurrentTime -= Time.deltaTime;
             if (CurrentTime <= 0)
@@ -62,7 +63,11 @@ public class GameManager : MonoBehaviour
         CurrentScore += amount;
         Debug.Log($"Solved {puzzleID}! Score: {CurrentScore}");
 
-        // GoogleSheetManager.Instance.LogPuzzleSolve(puzzleID, amount); // Uncomment when ready
+        // LINKED: Send the live score update to Google Sheets!
+        if (SheetManager.Instance != null)
+        {
+            SheetManager.Instance.LogPuzzleSolve(puzzleID, amount);
+        }
     }
 
     // --- MODE SWITCHER (FPS <-> UI) ---
@@ -88,25 +93,40 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Debug.Log("GAME OVER: TIME EXPIRED");
-        // UIManager.Instance.ShowGameOver(); // We will add this later
-        // 1. Add Score Locally
-        //GameManager.Instance.AddScore(ScoreValue, PuzzleID);
 
-        //// 2. SEND TO GOOGLE
-        //GoogleSheetManager.Instance.LogPuzzleSolve(PuzzleID); // <--- ADD THIS
+        // LINKED: Send max time to Google Sheets to indicate they ran out of time
+        if (SheetManager.Instance != null)
+        {
+            SheetManager.Instance.SendFinalTime(MaxTime);
+        }
 
-        //OnPuzzleSolved.Invoke();
+        // UIManager.Instance.ShowEndScreen(CurrentScore, false); // Add later
     }
 
     public void TimePenalty(float time)
     {
-        CurrentTime-=time;
+        CurrentTime -= time;
+        Debug.Log($"Time Penalty: {time} seconds lost!");
     }
 
     public void WinGame()
     {
         HasEscaped = true;
-        IsGamePaused = true;
-        Debug.Log("YOU ESCAPED!");
+        IsGamePaused = true; // Stops the timer
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Calculate how long it took them to escape
+        float timeTaken = MaxTime - CurrentTime;
+        Debug.Log($"YOU ESCAPED! Final Score: {CurrentScore} | Time Taken: {timeTaken}s");
+
+        // LINKED: Upload their final winning time to Google Sheets!
+        if (SheetManager.Instance != null)
+        {
+            SheetManager.Instance.SendFinalTime(timeTaken);
+        }
+
+        // UIManager.Instance.ShowEndScreen(CurrentScore, true); // Add later
     }
 }
