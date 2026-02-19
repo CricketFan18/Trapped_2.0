@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 
-public class GoogleSheetManager : MonoBehaviour
+public class SheetManager : MonoBehaviour
 {
-    public static GoogleSheetManager Instance;
+    public static SheetManager Instance;
 
     [Header("Configuration")]
     public string WebAppURL = "PASTE_YOUR_NEW_DEPLOYMENT_URL_HERE";
