@@ -10,6 +10,8 @@ public class GemManager : MonoBehaviour
     public bool holding = false;
     public Gem heldGem;
     public static GemManager instance;
+    public int pickupFrame;
+    public int placeFrame;
     public Transform cam;
     public List<Gem> gems = new List<Gem>();
 
@@ -29,6 +31,7 @@ public class GemManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E) && holding)
         {
+            Debug.Log("Place");
             heldGem.PlaceGem();
         }
     }

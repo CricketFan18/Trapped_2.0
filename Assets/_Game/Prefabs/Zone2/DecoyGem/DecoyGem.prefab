@@ -664,7 +664,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionPrompt: Press E to Spawn Gems
-  gemPrefab: {fileID: 6688661587918791547, guid: 30017893b7881ce49a201c11c6fa0c8e, type: 3}
+  gemPrefab: {fileID: 4912684138568748956, guid: d48ce18b5bbca5747b3a70819d342cc7, type: 3}
   spawnPoint: {fileID: 2799308712958183529}
 --- !u!1 &5843340145708366692
 GameObject:
@@ -737,8 +737,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbe50b6445488c54db230210f98ea382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  win: {fileID: 0}
-  fail: {fileID: 0}
   alarmSound: {fileID: 8300000, guid: 06b628990564b1c4283306e529b7b84a, type: 3}
 --- !u!82 &3553215358791517672
 AudioSource:
@@ -1139,7 +1137,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2888053072845024725, guid: 29c11c084077b294e9b96f9266422a50, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

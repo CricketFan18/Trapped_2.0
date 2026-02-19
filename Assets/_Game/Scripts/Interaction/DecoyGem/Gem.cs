@@ -10,7 +10,6 @@ public class Gem : MonoBehaviour, IInteractable
     public int weight = 5;
     public bool fake = false;
     public List<AudioClip> audioClips = new List<AudioClip>();
-    private int pickupFrame;
 
     void Start()
     {
@@ -19,9 +18,8 @@ public class Gem : MonoBehaviour, IInteractable
 
     bool IInteractable.Interact(Interactor interactor)
     {
-        if (GemManager.instance.holding) return false;
-        
-        pickupFrame = Time.frameCount;
+        if (GemManager.instance.holding || GemManager.instance.placeFrame == Time.frameCount) return false;
+        GemManager.instance.pickupFrame = Time.frameCount;
         Debug.Log(interactor.name + " is holding");
         GetComponent<Rigidbody>().isKinematic = true;
         this.transform.SetParent(interactor.transform);
@@ -42,16 +40,17 @@ public class Gem : MonoBehaviour, IInteractable
 
     public void PlaceGem()
     {
-        if (Time.frameCount == pickupFrame) return;
+        if (Time.frameCount == GemManager.instance.pickupFrame) return;
 
+        GemManager.instance.placeFrame = Time.frameCount;
         Ray ray = new Ray(GemManager.instance.cam.transform.position, GemManager.instance.cam.transform.forward);
         RaycastHit hit; 
         
         if (Physics.Raycast(ray, out hit, 5f))
         {
             transform.SetParent(null);
-            transform.position = hit.point;
             transform.GetComponent<Rigidbody>().isKinematic = false;
+            transform.position = hit.point;
             GemManager.instance.holding = false;
             GemManager.instance.heldGem = null;
         }

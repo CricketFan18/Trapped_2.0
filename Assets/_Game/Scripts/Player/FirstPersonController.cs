@@ -85,13 +85,12 @@ public class FirstPersonController : MonoBehaviour
         _moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
         // 2. Apply Gravity 
-        if (!_characterController.isGrounded) { _moveDirection.y = movementDirectionY + (Gravity * Time.deltaTime); }
-
+        if (!_characterController.isGrounded)  { _moveDirection.y = movementDirectionY + (Gravity * Time.deltaTime); }
+        else {_moveDirection.y = -1f;}
         // 3. Move Character
         _characterController.Move(_moveDirection * Time.deltaTime);
 
         // 4. Camera Rotation
-        if(Cursor.visible) return;
         _rotationX += -Input.GetAxis("Mouse Y") * MouseSensitivity;
         _rotationX = Mathf.Clamp(_rotationX, -LookXLimit, LookXLimit);
         CameraTransform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
