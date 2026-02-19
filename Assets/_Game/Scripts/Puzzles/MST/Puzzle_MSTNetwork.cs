@@ -20,6 +20,12 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
     [SerializeField] private Button resetButton;
     [SerializeField] private Button backButton;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip pruneSound;
+    [SerializeField] private AudioClip errorSound;
+    [SerializeField] private AudioClip successSound;
+
     // Graph Data
     private List<NodeUI> allNodes = new();
     private List<EdgeUI> activeEdges = new();
@@ -120,6 +126,10 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
 
     private void RemoveEdge(EdgeUI e)
     {
+        if (audioSource != null && pruneSound != null)
+        {
+            audioSource.PlayOneShot(pruneSound);
+        }
         if (isSolved) return; // Prevent interaction if already won
 
         if (activeEdges.Contains(e))
@@ -158,18 +168,31 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
         if (isSolved) return;
         if (feedbackText != null) feedbackText.gameObject.SetActive(true);
 
+        if (!CheckConnectivity() || activeEdges.Count != 7 || (int)playerTotalCost > trueMinimumWeight)
+        {
+            if (audioSource != null && errorSound != null)
+            {
+                audioSource.PlayOneShot(errorSound);
+            }
+        }
+
         if (!CheckConnectivity()) ShowFeedback("<color=red>Error: Network Disconnected</color>");
         else if (activeEdges.Count != 7) ShowFeedback("<color=red>Error: Cycles Detected</color>");
         else if ((int)playerTotalCost > trueMinimumWeight) ShowFeedback($"<color=orange>Efficiency Low. Current: {(int)playerTotalCost}</color>");
         else
         {
+            // --- NEW: Play the success sound ---
+            if (audioSource != null && successSound != null)
+            {
+                audioSource.PlayOneShot(successSound);
+            }
+            // -----------------------------------
+
             ShowFeedback("<color=green>SUCCESS! System Stabilized.</color>");
             isSolved = true;
 
-            // 3. Tell the core architecture we solved it!
             CompletePuzzle();
 
-            // Optional: Auto-close the UI after 2 seconds
             StartCoroutine(CloseDelay());
         }
     }

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream:Assets/_Game/Prefabs/Puzzles/Cargame/CarGame_Panel.prefab.meta
 guid: bcac1f4b6365db14e805540b462cb2b0
+=======
+guid: 008af02155404aa4798336e3afbd0c4b
+>>>>>>> Stashed changes:Assets/_Game/Prefabs/UI/PuzzleTerminal.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 
