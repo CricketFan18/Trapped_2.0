@@ -1,40 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class KS_ItemObj : MonoBehaviour, IInteractable
 {
     public KS_Item item;
-    private knapsackManager InventoryParent;
-    private bool over = false;
 
-    private void Start()
-    {
-        InventoryParent = FindObjectOfType<knapsackManager>();
-    }
-    // Implementation of the Interface Property
-    public string InteractionPrompt => "Press E to Pick " + item.name;
+    public string InteractionPrompt => "Press E to Pick Up " + (item != null ? item.itemName : "Item");
 
-    // Implementation of the Interface Method
     public bool Interact(Interactor interactor)
     {
-        // Simple visual feedback
-        InventoryParent.GetComponentInChildren<KS_Inventory>().AddItem(item);
-        InventoryParent.GetComponent<knapsackManager>().items_collected += 1;
-        Debug.Log("Interaction Successful!");
-        over = true;
+        if (item == null) return false;
+
+        // If the UI is already open/spawned, add it directly
+        if (KnapsackPuzzleUI.Instance != null && KnapsackPuzzleUI.Instance.inventory != null)
+        {
+            KnapsackPuzzleUI.Instance.inventory.AddItem(item);
+            KnapsackPuzzleUI.Instance.items_collected++;
+            KnapsackPuzzleUI.Instance.updateStats();
+        }
+        else
+        {
+            // If the UI hasn't been opened yet, save it to the static buffer!
+            KnapsackPuzzleUI.PreCollectedItems.Add(item);
+            KnapsackPuzzleUI.GlobalItemsCollected++;
+        }
+
+        Debug.Log($"[Knapsack] Picked up {item.itemName}");
+        Destroy(gameObject);
         return true;
     }
-
-    private void FixedUpdate()
-    {
-        if (over)
-        {
-            over = false;
-            gameObject.SetActive(false);
-            
-        }
-    }
 }
-

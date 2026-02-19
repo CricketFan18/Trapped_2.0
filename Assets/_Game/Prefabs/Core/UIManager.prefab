@@ -530,7 +530,7 @@ MonoBehaviour:
   _timerText: {fileID: 2607940966812347763}
   _interactionPromptText: {fileID: 2036882524554566998}
   _interactionPanel: {fileID: 186014380126993960}
-  PuzzleParent: {fileID: 0}
+  PuzzleParent: {fileID: 5180821659485720069}
 --- !u!1 &8314643611251602899
 GameObject:
   m_ObjectHideFlags: 0

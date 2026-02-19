@@ -130,10 +130,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1931595237763962539, guid: 7b949ad35de92bb4c9f79ee9ad098400, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2387666994630497272, guid: 7b949ad35de92bb4c9f79ee9ad098400, type: 3}
       propertyPath: m_Name
       value: MainMenu
@@ -176,10 +172,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5293761745494066488, guid: 7b949ad35de92bb4c9f79ee9ad098400, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5646826516631816424, guid: 7b949ad35de92bb4c9f79ee9ad098400, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

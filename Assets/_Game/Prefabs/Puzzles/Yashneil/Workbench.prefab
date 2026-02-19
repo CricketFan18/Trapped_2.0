@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a7e59ec9ef1286f45b5300599fb0f18e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -143,7 +143,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5857346612349917888}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8783be82c9aaac04ead1086c27e18256, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cc0b6b8c2de8cf40b18061fdcac27e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiManager: {fileID: 0}
+  PuzzleID: Bomb_01
+  UIPrefab: {fileID: 6216516966159813604, guid: 04aa7bdde00a72a4c96288e5c4aaa461, type: 3}
+  ScoreAward: 100
