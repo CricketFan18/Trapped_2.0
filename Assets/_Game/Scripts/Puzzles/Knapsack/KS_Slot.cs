@@ -1,53 +1,52 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
+
+public class KS_Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Image slotImage;
     public bool isHovered;
     private KS_Item heldItem;
     public bool isBagSlot = false;
-    private knapsackManager KS_manager;
+
     private void Awake()
     {
-        KS_manager = FindObjectOfType<knapsackManager>();
-        slotImage = transform.GetChild(0).GetComponent<Image>();
-
+        if (transform.childCount > 0)
+            slotImage = transform.GetChild(0).GetComponent<Image>();
     }
 
-    public KS_Item GetItem()
-    {
-        return heldItem;
-    }
+    public KS_Item GetItem() => heldItem;
 
     public void set_item(KS_Item item)
     {
         heldItem = item;
         updateSlot();
-        updateStats();
+        updateStats(false);
     }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovered = true;
-        if(heldItem != null)
+        if (heldItem != null && KnapsackPuzzleUI.Instance != null && KnapsackPuzzleUI.Instance.itemText != null)
         {
-            //displays item details
-            KS_manager.itemText.text =  "\t\t" +heldItem.name + "\n\t\t" + "Stealth Value: " + heldItem.stealthValue + "\n\t\t" + "Bulk Value: " + heldItem.bulkValue;
+            KnapsackPuzzleUI.Instance.itemText.text = $"{heldItem.itemName}\nStealth: {heldItem.stealthValue}\nBulk: {heldItem.bulkValue}";
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         isHovered = false;
-        KS_manager.itemText.text = "";
+        if (KnapsackPuzzleUI.Instance != null && KnapsackPuzzleUI.Instance.itemText != null)
+        {
+            KnapsackPuzzleUI.Instance.itemText.text = "";
+        }
     }
 
     public void updateSlot()
     {
-        if(heldItem != null)
+        if (slotImage == null) return;
+
+        if (heldItem != null)
         {
             slotImage.enabled = true;
             slotImage.sprite = heldItem.icon;
@@ -56,7 +55,6 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
         else
         {
             slotImage.enabled = false;
-            Debug.Log("Slot is empty");
         }
     }
 
@@ -65,40 +63,25 @@ public class KS_Slot : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
         updateStats(true);
         heldItem = null;
         updateSlot();
-        
-        
     }
 
-    public bool hasItem()
-    {
-        return heldItem != null;
-    }
+    public bool hasItem() => heldItem != null;
 
-    public void updateStats(bool removeItem=false)
+    public void updateStats(bool removeItem = false)
     {
-        if (isBagSlot)
+        if (isBagSlot && heldItem != null && KnapsackPuzzleUI.Instance != null)
         {
             if (!removeItem)
             {
-                //if removeItem is false then add stealth and bulk values to the manager
-                KS_manager.stealthLevel += heldItem.stealthValue;
-                KS_manager.bulk += heldItem.bulkValue;
+                KnapsackPuzzleUI.Instance.stealthLevel += heldItem.stealthValue;
+                KnapsackPuzzleUI.Instance.bulk += heldItem.bulkValue;
             }
             else
-            {  //if removeItem is true then remove stealth and bulk values from the manager
-                KS_manager.stealthLevel -= heldItem.stealthValue;
-                KS_manager.bulk -= heldItem.bulkValue;
+            {
+                KnapsackPuzzleUI.Instance.stealthLevel -= heldItem.stealthValue;
+                KnapsackPuzzleUI.Instance.bulk -= heldItem.bulkValue;
             }
-
-            KS_manager.updateStats();
-
-
+            KnapsackPuzzleUI.Instance.updateStats();
         }
-
-
     }
-
-    
-
-
 }
