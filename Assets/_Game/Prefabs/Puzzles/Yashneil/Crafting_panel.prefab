@@ -519,7 +519,6 @@ GameObject:
   - component: {fileID: 3954354128418985036}
   - component: {fileID: 4313091301779531274}
   - component: {fileID: 8535571261527143096}
-  - component: {fileID: 4539715583311734841}
   m_Layer: 0
   m_Name: CraftingScreen
   m_TagString: Untagged
@@ -555,7 +554,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 500, y: -100}
+  m_AnchoredPosition: {x: 517, y: -50}
   m_SizeDelta: {x: 600, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4313091301779531274
@@ -596,36 +595,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4539715583311734841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1598296492887994438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 445ea906d295f2b43b585fd41e4c6814, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  craftingUIPanel: {fileID: 1598296492887994438}
-  inventoryRectTransform: {fileID: 3935322844094894352}
-  craftingCloseButton: {fileID: 105180274491310532}
-  craftButtonUI: {fileID: 5816558478029514024}
-  failMessageUI: {fileID: 5564661393130942947}
-  insufficientMessageUI: {fileID: 3067217589524681007}
-  successMessageUI: {fileID: 1377258394391930724}
-  inputSlots:
-  - {fileID: 3529751243840924331}
-  - {fileID: 2808350724789759587}
-  - {fileID: 1972338556752429399}
-  - {fileID: 6916345800741287109}
-  - {fileID: 1623914583763750781}
-  - {fileID: 3943179940314563683}
-  resultSlot: {fileID: 8346727363934078413}
-  c4ResultSprite: {fileID: 21300000, guid: 6b8728d20b5d4c540b335c3789517218, type: 3}
-  shiftedXPosition: -300
-  isCraftingActive: 0
 --- !u!1 &1730276894335082564
 GameObject:
   m_ObjectHideFlags: 0
@@ -747,9 +716,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4539715583311734841}
+      - m_Target: {fileID: 6216516966159813604}
         m_TargetAssemblyTypeName: CraftingSystem, Assembly-CSharp
-        m_MethodName: CloseCraftingStation
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -875,7 +844,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -323, y: 50}
   m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4796075919291766094
@@ -1950,7 +1919,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4539715583311734841}
+      - m_Target: {fileID: 8696464762446291299}
         m_TargetAssemblyTypeName: CraftingSystem, Assembly-CSharp
         m_MethodName: TryCraft
         m_Mode: 1
@@ -2047,8 +2016,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2065577436137372985}
   - component: {fileID: 3863213861360890010}
+  - component: {fileID: 8696464762446291299}
   m_Layer: 0
-  m_Name: Drag
+  m_Name: Crafting_panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2073,7 +2043,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3863213861360890010
 MonoBehaviour:
@@ -2087,7 +2057,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157860604505ad0488cce4dfa61173d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
+--- !u!114 &8696464762446291299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6216516966159813604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 445ea906d295f2b43b585fd41e4c6814, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InventoryScreen: {fileID: 2289548865352091515}
+  CraftingScreen: {fileID: 1598296492887994438}
+  closeButton: {fileID: 105180274491310532}
+  craftButtonUI: {fileID: 5816558478029514024}
+  failMessageUI: {fileID: 5564661393130942947}
+  insufficientMessageUI: {fileID: 3067217589524681007}
+  successMessageUI: {fileID: 1377258394391930724}
+  inputSlots:
+  - {fileID: 3529751243840924331}
+  - {fileID: 2808350724789759587}
+  - {fileID: 1972338556752429399}
+  - {fileID: 6916345800741287109}
+  - {fileID: 1623914583763750781}
+  - {fileID: 3943179940314563683}
+  resultSlot: {fileID: 8346727363934078413}
+  c4ResultSprite: {fileID: 21300000, guid: 6b8728d20b5d4c540b335c3789517218, type: 3}
 --- !u!1 &6561746271788871303
 GameObject:
   m_ObjectHideFlags: 0

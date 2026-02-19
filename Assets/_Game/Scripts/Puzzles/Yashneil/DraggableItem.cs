@@ -5,12 +5,15 @@ using System.Collections.Generic;
 
 public class DraggableItem : MonoBehaviour
 {
-    [Header("Assign your global Canvas here!")]
-    public Canvas canvas;
-
+    private Canvas canvas;
     private GameObject selectedItem;
     private Transform originalParent;
     private Vector3 originalPosition;
+
+    void Start()
+    {
+        canvas = GetComponentInParent<Canvas>();
+    }
 
     void Update()
     {
@@ -72,12 +75,11 @@ public class DraggableItem : MonoBehaviour
                     if (originCSlot != null)
                     {
                         existingItem.localScale = new Vector3(0.95f, 0.95f, 1f);
-                        originCSlot.currentItemName = GetItemName(existingItem.GetComponent<Image>());
+                        originCSlot.currentItemName = GetItemName(existingItem.gameObject);
                     }
                     else
                     {
                         existingItem.localScale = Vector3.one;
-                        // Item went back to inventory, erase from block
                         if (CraftingSystem.Instance != null && CraftingSystem.Instance.temporaryItemStorage.ContainsKey(existingItem.gameObject))
                             CraftingSystem.Instance.temporaryItemStorage.Remove(existingItem.gameObject);
                     }
@@ -87,58 +89,49 @@ public class DraggableItem : MonoBehaviour
                     if (originCSlot != null) originCSlot.currentItemName = "";
                 }
 
-                // 2. Physically move selected item
+                // 2. Move selected item
                 selectedItem.transform.SetParent(targetSlot);
                 selectedItem.transform.localPosition = Vector3.zero;
 
-                // 3. Handle Scaling & Add to Temporary Block
+                // 3. Scale & Register Block
                 if (targetCSlot != null)
                 {
-                    selectedItem.transform.localScale = new Vector3(0.95f, 0.95f, 1f); // 5% shrink
-                    targetCSlot.currentItemName = GetItemName(selectedItem.GetComponent<Image>());
+                    selectedItem.transform.localScale = new Vector3(0.95f, 0.95f, 1f);
+                    targetCSlot.currentItemName = GetItemName(selectedItem);
 
-                    // SAVE TO BLOCK: Only if it came from the inventory
                     if (originCSlot == null && CraftingSystem.Instance != null)
-                    {
                         CraftingSystem.Instance.temporaryItemStorage[selectedItem] = originalParent;
-                    }
                 }
                 else
                 {
-                    selectedItem.transform.localScale = Vector3.one; // Restores to 100%
-                    // It returned to inventory, remove from block
+                    selectedItem.transform.localScale = Vector3.one;
                     if (CraftingSystem.Instance != null && CraftingSystem.Instance.temporaryItemStorage.ContainsKey(selectedItem))
-                    {
                         CraftingSystem.Instance.temporaryItemStorage.Remove(selectedItem);
-                    }
                 }
 
                 placed = true;
-                if (CraftingSystem.Instance != null) CraftingSystem.Instance.OnItemPlaced();
                 break;
             }
         }
 
-        // FIX FOR DROPPING OUTSIDE SLOTS: Preserves the correct scale depending on where it bounces back to
+        // Return to original spot if dropped in empty space
         if (!placed)
         {
             selectedItem.transform.SetParent(originalParent);
             selectedItem.transform.position = originalPosition;
 
             if (originalParent.GetComponent<CraftingSlot>() != null)
-                selectedItem.transform.localScale = new Vector3(0.95f, 0.95f, 1f); // Bounced back to Crafting (stays 95%)
+                selectedItem.transform.localScale = new Vector3(0.95f, 0.95f, 1f);
             else
-                selectedItem.transform.localScale = Vector3.one; // Bounced back to Inventory (stays 100%)
+                selectedItem.transform.localScale = Vector3.one;
         }
         selectedItem = null;
     }
 
-    private string GetItemName(Image img)
+    private string GetItemName(GameObject itemObj)
     {
-        if (img == null || InventorySystem.Instance == null) return "";
-        int index = InventorySystem.Instance.itemIcons.IndexOf(img);
-        if (index >= 0 && index < InventorySystem.Instance.itemList.Count)
-            return InventorySystem.Instance.itemList[index];
+        ItemData data = itemObj.GetComponent<ItemData>();
+        if (data != null) return data.ItemName;
         return "";
     }
 }
