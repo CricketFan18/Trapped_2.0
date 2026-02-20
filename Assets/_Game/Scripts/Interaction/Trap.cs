@@ -12,6 +12,7 @@ public class Trap : MonoBehaviour
     private AudioSource audioSource;
     public ParticleSystem particle;
     BoxCollider[] doorColliders =  new BoxCollider[2];
+    public Transform c4;
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class Trap : MonoBehaviour
             doorColliders[0].enabled = false;
             doorColliders[1].enabled = false;
             EscapeDoor escapeDoor = door1.transform.parent.parent.AddComponent<EscapeDoor>();
+            escapeDoor.c4 = c4.gameObject;
             escapeDoor.explosionEffect = particle;
             escapeDoor.doorModel = door1.parent.gameObject;
             escapeDoor.GetComponent<BoxCollider>().enabled = true;
