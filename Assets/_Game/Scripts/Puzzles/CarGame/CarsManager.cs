@@ -24,6 +24,7 @@ public class CarsManager : BasePuzzleUI
     // 2. Override OnSetup instead of Start
     protected override void OnSetup()
     {
+        countdownText.text = "10.00";
         for (int i = 0; i < carPivots.Length; i++)
         {
             originalRot[i] = carPivots[i].rotation;
@@ -110,6 +111,7 @@ public class CarsManager : BasePuzzleUI
             carPivots[i].rotation = originalRot[i];
         }
         countdown = 10;
+        countdownText.text = "10.00";
         retryButton.gameObject.SetActive(false);
         gameOver = false;
     }

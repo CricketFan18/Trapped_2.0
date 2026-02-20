@@ -20,6 +20,7 @@ public abstract class BasePuzzleUI : MonoBehaviour
 
     public void TriggerSolvedState()
     {
+        GoldSpawner.instance.SpawnGoldbar();
         OnShowSolvedState();
     }
 
