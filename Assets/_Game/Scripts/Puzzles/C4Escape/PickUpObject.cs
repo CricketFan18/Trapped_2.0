@@ -12,6 +12,7 @@ public class PickUpObject : MonoBehaviour, IInteractable
         if (InventorySystem.Instance != null)
         {
             InventorySystem.Instance.CollectItem(ItemName, itemIcon);
+            CraftingSystem.Instance.PopulateInventoryUI();
         }
 
         Destroy(gameObject);
