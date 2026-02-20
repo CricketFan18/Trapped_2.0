@@ -29,7 +29,7 @@ public class KS_Inventory : MonoBehaviour
     private void Update()
     {
         startDrag();
-        updateDragIcon();
+        //updateDragIcon();
         endDrag();
     }
 
@@ -62,13 +62,16 @@ public class KS_Inventory : MonoBehaviour
             {
                 draggedSlot = hovered_slot;
                 isDragging = true;
-
+                
+                /* commented this block because it causes bug in inventory
+                 * 
+                 * 
                 if (draggedSlotImg != null)
                 {
                     draggedSlotImg.enabled = true;
                     draggedSlotImg.sprite = draggedSlot.GetItem().icon;
-                    draggedSlotImg.color = new Color(1, 1, 1, 0.7f);
-                }
+                    draggedSlotImg.color = new Color(1, 0.3f, 0.3f, 0.7f);
+                }*/
             }
         }
     }
@@ -99,6 +102,7 @@ public class KS_Inventory : MonoBehaviour
 
     private void handleDropSlot(KS_Slot from, KS_Slot to)
     {
+        Debug.Log("handle drop");
         if (from == to) return;
 
         if (to.hasItem())
@@ -119,22 +123,4 @@ public class KS_Inventory : MonoBehaviour
         }
     }
 
-    public void clearBagSlot()
-    {
-        foreach (KS_Slot bag_slot in bagSlots)
-        {
-            if (bag_slot.hasItem())
-            {
-                foreach (KS_Slot inv_slot in inventorySlots)
-                {
-                    if (!inv_slot.hasItem())
-                    {
-                        inv_slot.set_item(bag_slot.GetItem());
-                        break;
-                    }
-                }
-                bag_slot.clearSlot();
-            }
-        }
-    }
 }

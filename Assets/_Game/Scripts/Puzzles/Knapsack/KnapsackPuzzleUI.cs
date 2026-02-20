@@ -24,6 +24,9 @@ public class KnapsackPuzzleUI : BasePuzzleUI
     [SerializeField] private Slider BulkBar;
     [SerializeField] private TextMeshProUGUI StealthValueText;
     [SerializeField] private TextMeshProUGUI BulkValueText;
+    [SerializeField] private Slider Timer;
+    [SerializeField] private Button CheckBtn;
+    
     //[SerializeField] private TextMeshProUGUI infoText;
 
     [Header("Containers")]
@@ -31,9 +34,16 @@ public class KnapsackPuzzleUI : BasePuzzleUI
     [SerializeField] private GameObject inventoryPanel;
     [SerializeField] private GameObject progressBarPanel;
     [SerializeField] private GameObject puzzleCompleteImg;
+    [SerializeField] private GameObject CheckButtonContainer;
 
-    private float infoDisplay_start = 0f;
-    private bool showInfo = false;
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip successClip;
+    [SerializeField] private AudioClip failClip;
+    [SerializeField] public AudioClip itemClick;
+
+    private float lastCheckTime = 0f;
+    private bool can_check = true;
     private bool _isSolved = false;
 
     // 2. Override OnSetup
@@ -56,11 +66,16 @@ public class KnapsackPuzzleUI : BasePuzzleUI
 
     private void Update()
     {
-        if (showInfo && Time.time - infoDisplay_start > 5f)
+        if (!can_check && Time.time - lastCheckTime > 5f)
         {
-            showInfo = false;
-            //if (infoText) infoText.text = "";
+            can_check = true;
+            
         }
+        else
+        {
+            Timer.value = (Time.time - lastCheckTime);
+        }
+        CheckBtn.interactable = can_check;
     }
 
     public void updateStats()
@@ -71,23 +86,32 @@ public class KnapsackPuzzleUI : BasePuzzleUI
         if (StealthValueText) StealthValueText.text = stealthLevel + "%";
         if (BulkBar) BulkBar.value = bulk;
         if (BulkValueText) BulkValueText.text = bulk + "KG";
+    }
 
+    public void CheckPuzzleWinCondition()
+    {
+        if (!can_check) return;
         // Check fail state (Too heavy)
-        if (bulk >= 50)
+        if (bulk >= 50 || stealthLevel < 95)
         {
-            //if (infoText) infoText.text = "<color=red>Too heavy! Bag dropped.</color>";
-            showInfo = true;
-            infoDisplay_start = Time.time;
-            inventory.clearBagSlot();
+            _isSolved = false;
+            lastCheckTime = Time.time;
+            can_check = false;
+            playSFX(failClip);
         }
         // Check win state
         else if (stealthLevel >= 95 && items_collected >= 10 && bulk < 50)
         {
             _isSolved = true;
+            playSFX(successClip);
             CompletePuzzle(); // Tells the Core Architecture we won!
         }
     }
 
+    public void playSFX(AudioClip sfx)
+    {
+        audioSource.PlayOneShot(sfx);
+    }
     // 3. System forces us to write this: What happens when solved?
     protected override void OnShowSolvedState()
     {
@@ -96,6 +120,7 @@ public class KnapsackPuzzleUI : BasePuzzleUI
         if (inventoryPanel) inventoryPanel.SetActive(false);
         if (progressBarPanel) progressBarPanel.SetActive(false);
         if (puzzleCompleteImg) puzzleCompleteImg.SetActive(true);
+        if (CheckButtonContainer) CheckButtonContainer.SetActive(false);
         //if (infoText) infoText.text = "<color=green>KNAPSACK OPTIMIZED (SOLVED)</color>";
     }
 }
