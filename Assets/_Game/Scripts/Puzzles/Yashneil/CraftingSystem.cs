@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +30,7 @@ public class CraftingSystem : BasePuzzleUI
     private readonly string[] c4Recipe = { "Casing", "Battery", "Timer", "Detonator", "Wires", "Mercury Switch" };
 
     private bool _isSolved = false;
+    private bool waitingForPickup = false;
 
     private void Awake() { Instance = this; }
 
@@ -54,8 +58,9 @@ public class CraftingSystem : BasePuzzleUI
         PopulateInventoryUI();
     }
 
-    private void PopulateInventoryUI()
+    public void PopulateInventoryUI()
     {
+        Debug.Log("[CraftingSystem] Populating Inventory UI");
         if (InventorySystem.Instance == null || InventoryScreen == null) return;
 
         List<Image> invIcons = new List<Image>();
@@ -139,6 +144,7 @@ public class CraftingSystem : BasePuzzleUI
             _isSolved = true;
             CompletePuzzle();
             GenerateC4Visuals();
+            
         }
         else
         {
@@ -157,34 +163,43 @@ public class CraftingSystem : BasePuzzleUI
     private void GenerateC4Visuals()
     {
         GameObject c4Item = null;
+
         for (int i = 0; i < inputSlots.Length; i++)
         {
-            while (inputSlots[i].transform.childCount > 0)
+            for (int j = inputSlots[i].transform.childCount - 1; j >= 0; j--)
             {
-                GameObject item = inputSlots[i].transform.GetChild(0).gameObject;
+                GameObject item = inputSlots[i].transform.GetChild(j).gameObject;
 
                 if (c4Item == null)
                 {
                     c4Item = item;
-                    Image img = c4Item.GetComponent<Image>();
-                    if (img != null) { img.sprite = c4ResultSprite; img.enabled = true; }
 
-                    if (resultSlot)
+                    Image img = c4Item.GetComponent<Image>();
+                    if (img != null)
+                    {
+                        img.sprite = c4ResultSprite;
+                        img.enabled = true;
+                    }
+
+                    if (resultSlot != null)
                     {
                         c4Item.transform.SetParent(resultSlot);
                         c4Item.transform.localPosition = Vector3.zero;
 
                         ItemData data = c4Item.GetComponent<ItemData>();
-                        if (data != null) data.ItemName = "Armed C4";
+                        if (data != null)
+                            data.ItemName = "Armed C4";
                     }
-                    temporaryItemStorage.Remove(c4Item);
+                    OnC4Crafted();
                 }
                 else
                 {
                     Destroy(item);
                 }
             }
-            if (inputSlots[i]) inputSlots[i].currentItemName = "";
+
+            if (inputSlots[i] != null)
+                inputSlots[i].currentItemName = "";
         }
     }
 
@@ -194,7 +209,36 @@ public class CraftingSystem : BasePuzzleUI
         yield return new WaitForSeconds(2f);
         if (messageUI) messageUI.SetActive(false);
     }
+    
+    private void OnC4Crafted()
+    {
+        resultSlot.parent = transform;
+        RectTransform c4Rect = resultSlot.GetComponent<RectTransform>();
+        resultSlot.GetChild(0).tag = "Untagged";
+        float slideDistance = 1500f; float animationDuration = 0.6f; 
+        
+        //Sliding Inventory And Crafting Screen
+        InventoryScreen.transform.DOMoveX(InventoryScreen.transform.position.x - slideDistance, animationDuration).SetEase(Ease.InOutCubic);
+        CraftingScreen.transform.DOMoveX(InventoryScreen.transform.position.x + slideDistance, animationDuration).SetEase(Ease.InOutCubic);
+        
+        resultSlot.GetComponent<Image>().enabled = false;
+        TMP_Text successText = successMessageUI.gameObject.GetComponentInChildren<TMP_Text>();
+        successText.alpha = 0;
+        
+        // Move C4 to center
+        c4Rect.DOAnchorPos(Vector2.zero, animationDuration)
+            .SetEase(Ease.InOutCubic);
 
+        // Scale C4
+        resultSlot.DOScale(5f, animationDuration)
+            .SetEase(Ease.OutBack).OnComplete(() =>
+            {
+                waitingForPickup = true;
+            });
+        
+        successText.DOFade(1, animationDuration).SetEase(Ease.OutBack);
+    }
+    
     public void ResetIngredients()
     {
         // SAFETY CHECK: Do nothing if the screen isn't assigned
@@ -236,6 +280,18 @@ public class CraftingSystem : BasePuzzleUI
                 temporaryItemStorage.Remove(item.gameObject);
             }
             if (slot) slot.currentItemName = "";
+        }
+    }
+
+    private void Update()
+    {
+        if (waitingForPickup && Input.GetKeyDown(KeyCode.E))
+        {
+            waitingForPickup = false;
+
+            InventorySystem.Instance.CollectItem("Armed C4", c4ResultSprite);
+
+            UIManager.Instance.CloseActivePuzzle();
         }
     }
 }

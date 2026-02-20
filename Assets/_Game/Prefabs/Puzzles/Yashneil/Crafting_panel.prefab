@@ -265,16 +265,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1377258394391930724}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 4.3, y: 4.3, z: 4.3}
+  m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 3954354128418985036}
+  m_Father: {fileID: 2065577436137372985}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 156, y: -140}
+  m_AnchoredPosition: {x: 0, y: -255.6}
   m_SizeDelta: {x: 150, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4459312901795097778
@@ -305,7 +305,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Success!
+  m_text: 'You crafted C4
+
+    Press E to pick up '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 024cd061800a1b8408ad595dc4796539, type: 2}
   m_sharedMaterial: {fileID: -7018767112271950970, guid: 024cd061800a1b8408ad595dc4796539, type: 2}
@@ -332,8 +334,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 19.59
+  m_fontSizeBase: 19.59
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -548,7 +550,6 @@ RectTransform:
   - {fileID: 8346727363934078413}
   - {fileID: 1408415984122162467}
   - {fileID: 3260398767017711737}
-  - {fileID: 1168286077632306139}
   - {fileID: 2814747530268666139}
   m_Father: {fileID: 2065577436137372985}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2038,6 +2039,8 @@ RectTransform:
   m_Children:
   - {fileID: 3935322844094894352}
   - {fileID: 3954354128418985036}
+  - {fileID: 6874925896117191023}
+  - {fileID: 1168286077632306139}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2084,7 +2087,7 @@ MonoBehaviour:
   - {fileID: 1623914583763750781}
   - {fileID: 3943179940314563683}
   resultSlot: {fileID: 8346727363934078413}
-  c4ResultSprite: {fileID: 21300000, guid: 6b8728d20b5d4c540b335c3789517218, type: 3}
+  c4ResultSprite: {fileID: 21300000, guid: f507f03eb80bcbf49bb458bd6a54bd9a, type: 3}
 --- !u!1 &6561746271788871303
 GameObject:
   m_ObjectHideFlags: 0
@@ -2547,6 +2550,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentItemName: 
+--- !u!1 &7962954341725453009
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6874925896117191023}
+  - component: {fileID: 7802293760265544861}
+  m_Layer: 0
+  m_Name: InventorySystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6874925896117191023
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962954341725453009}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.845897, y: -1.0582721, z: -1.1207396}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2065577436137372985}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7802293760265544861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962954341725453009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ac4e2711a38e454dbd5577a8932ad4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollectedItemsNames: []
+  CollectedItemSprites: []
 --- !u!1 &8447963469216873537
 GameObject:
   m_ObjectHideFlags: 0
