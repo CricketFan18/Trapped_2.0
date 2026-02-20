@@ -7,6 +7,10 @@ using System.Linq;
 
 public class Puzzle_MSTNetwork : BasePuzzleUI
 {
+    [Header("Puzzle Settings")]
+    [Tooltip("How many minutes the terminal locks out after a wrong answer.")]
+    [SerializeField] private float lockoutMinutes = 5f;
+
     [Header("UI References")]
     [SerializeField] private RectTransform nodeContainer;
     [SerializeField] private RectTransform lineContainer;
@@ -36,10 +40,10 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
     private int trueMinimumWeight;
     private bool isSolved = false;
 
-    // --- NEW: Bulletproof Lockout Variables ---
+    // Bulletproof Lockout Variables
     private bool isLockedOut = false;
     private float lockoutEndTime = -1f;
-    private float lockoutDuration = 300f; // 5 minutes in seconds
+    private float lockoutDuration;
     private string currentErrorReason = "";
 
     protected override void OnSetup()
@@ -49,18 +53,18 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
         UpdateCostUI();
 
         // Clear listeners to prevent double-clicks if OnSetup runs multiple times
-        confirmButton.onClick.RemoveAllListeners();
-        resetButton.onClick.RemoveAllListeners();
-        backButton.onClick.RemoveAllListeners();
+        if (confirmButton != null) confirmButton.onClick.RemoveAllListeners();
+        if (resetButton != null) resetButton.onClick.RemoveAllListeners();
+        if (backButton != null) backButton.onClick.RemoveAllListeners();
         if (exitButton != null) exitButton.onClick.RemoveAllListeners();
 
         // Hook up buttons
-        confirmButton.onClick.AddListener(OnConfirm);
-        resetButton.onClick.AddListener(OnReset);
-        backButton.onClick.AddListener(OnBack);
+        if (confirmButton != null) confirmButton.onClick.AddListener(OnConfirm);
+        if (resetButton != null) resetButton.onClick.AddListener(OnReset);
+        if (backButton != null) backButton.onClick.AddListener(OnBack);
         if (exitButton != null) exitButton.onClick.AddListener(OnExit);
 
-        // --- Check if the player is returning to a puzzle that is still locked ---
+        // Check if the player is returning to a puzzle that is still locked
         if (isLockedOut && Time.time < lockoutEndTime)
         {
             if (instructionText != null) instructionText.SetActive(false);
@@ -75,7 +79,6 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
         }
     }
 
-    // --- NEW: The Update loop handles the text so it never breaks ---
     private void Update()
     {
         if (!isLockedOut) return;
@@ -236,9 +239,9 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
             else if (!hasNoCycles) currentErrorReason = "Error: Cycles Detected";
             else currentErrorReason = $"Efficiency Low. Current: {(int)playerTotalCost}";
 
-            // --- Set the exact time in the future this puzzle will unlock ---
-            lockoutDuration = 5f * 60f; // 5 minutes
-            lockoutEndTime = Time.time + lockoutDuration + 2.5f; // Add 2.5s so we can show the error reason first!
+            // Set the exact time in the future this puzzle will unlock using the Inspector variable
+            lockoutDuration = lockoutMinutes * 60f;
+            lockoutEndTime = Time.time + lockoutDuration + 2.5f;
 
             isLockedOut = true;
             if (instructionText != null) instructionText.SetActive(false);
