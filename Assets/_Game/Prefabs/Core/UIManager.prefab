@@ -733,7 +733,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2836502496571661427
 RectTransform:
   m_ObjectHideFlags: 0
@@ -924,10 +924,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7482172689262366078}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 186.205, y: -35}
-  m_SizeDelta: {x: 332.41, y: 40.01}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 20, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5892362157406111635
 CanvasRenderer:
@@ -957,9 +957,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Press E to Interact
-
-'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 96345eea46966b345bc37190f21d5b8e, type: 2}
   m_sharedMaterial: {fileID: -1888130383373473401, guid: 96345eea46966b345bc37190f21d5b8e, type: 2}
@@ -1066,7 +1064,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 30, y: -60}
-  m_SizeDelta: {x: 372.41, y: 70}
+  m_SizeDelta: {x: 40, y: 70}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8859353047399544665
 CanvasRenderer:
