@@ -188,7 +188,7 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
 
         TextMeshProUGUI t = txtObj.AddComponent<TextMeshProUGUI>();
         t.text = w.ToString();
-        t.fontSize = 24; // Shrunk slightly to fit the box
+        t.fontSize = 24; 
         t.alignment = TextAlignmentOptions.Center;
         t.color = Color.white;
 
