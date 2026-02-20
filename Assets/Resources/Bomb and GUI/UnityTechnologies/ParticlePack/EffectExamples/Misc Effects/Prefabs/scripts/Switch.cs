@@ -15,11 +15,16 @@ public class Switch : CircuitNode
     }
     private void OnMouseDown()
     {
-        isOn = !isOn;
-        UpdateVisuals();
-        if (PuzzleManager.Instance != null)
+        if (PuzzleManager.Instance.canInteract)
         {
-            PuzzleManager.Instance.CheckSwitchLimit();
+
+
+            isOn = !isOn;
+            UpdateVisuals();
+            if (PuzzleManager.Instance != null)
+            {
+                PuzzleManager.Instance.CheckSwitchLimit();
+            }
         }
     }
     public void TurnOff()
