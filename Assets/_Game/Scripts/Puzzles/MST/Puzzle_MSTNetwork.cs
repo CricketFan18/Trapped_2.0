@@ -5,20 +5,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
-// 1. Inherit from BasePuzzleUI
 public class Puzzle_MSTNetwork : BasePuzzleUI
 {
+    [Header("Puzzle Settings")]
+    [Tooltip("How many minutes the terminal locks out after a wrong answer.")]
+    [SerializeField] private float lockoutMinutes = 5f;
+
     [Header("UI References")]
     [SerializeField] private RectTransform nodeContainer;
     [SerializeField] private RectTransform lineContainer;
     [SerializeField] private GameObject nodePrefab;
     [SerializeField] private TextMeshProUGUI costText;
     [SerializeField] private TextMeshProUGUI feedbackText;
+    [SerializeField] private GameObject instructionText;
 
     [Header("Buttons")]
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button resetButton;
     [SerializeField] private Button backButton;
+    [SerializeField] private Button exitButton;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -35,24 +40,82 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
     private int trueMinimumWeight;
     private bool isSolved = false;
 
-    // 2. Override OnSetup (Replaces Awake/Start)
+    // Bulletproof Lockout Variables
+    private bool isLockedOut = false;
+    private float lockoutEndTime = -1f;
+    private float lockoutDuration;
+    private string currentErrorReason = "";
+
     protected override void OnSetup()
     {
         SetupNodesAndGraph();
         trueMinimumWeight = CalculateTrueMSTWeight();
-
-        if (feedbackText != null) feedbackText.gameObject.SetActive(false);
         UpdateCostUI();
 
+        // Clear listeners to prevent double-clicks if OnSetup runs multiple times
+        if (confirmButton != null) confirmButton.onClick.RemoveAllListeners();
+        if (resetButton != null) resetButton.onClick.RemoveAllListeners();
+        if (backButton != null) backButton.onClick.RemoveAllListeners();
+        if (exitButton != null) exitButton.onClick.RemoveAllListeners();
+
         // Hook up buttons
-        confirmButton.onClick.AddListener(OnConfirm);
-        resetButton.onClick.AddListener(OnReset);
-        backButton.onClick.AddListener(OnBack);
+        if (confirmButton != null) confirmButton.onClick.AddListener(OnConfirm);
+        if (resetButton != null) resetButton.onClick.AddListener(OnReset);
+        if (backButton != null) backButton.onClick.AddListener(OnBack);
+        if (exitButton != null) exitButton.onClick.AddListener(OnExit);
+
+        // Check if the player is returning to a puzzle that is still locked
+        if (isLockedOut && Time.time < lockoutEndTime)
+        {
+            if (instructionText != null) instructionText.SetActive(false);
+            if (feedbackText != null) feedbackText.gameObject.SetActive(true);
+        }
+        else
+        {
+            // Lockout has ended (or never happened)
+            isLockedOut = false;
+            if (feedbackText != null) feedbackText.gameObject.SetActive(false);
+            if (instructionText != null) instructionText.SetActive(true);
+        }
+    }
+
+    private void Update()
+    {
+        if (!isLockedOut) return;
+
+        float timeRemaining = lockoutEndTime - Time.time;
+
+        if (timeRemaining > lockoutDuration)
+        {
+            // First 2.5 seconds: Show them exactly what they did wrong
+            ShowFeedback($"<color=red>{currentErrorReason}</color>");
+        }
+        else if (timeRemaining > 0)
+        {
+            // Countdown phase
+            int mins = Mathf.FloorToInt(timeRemaining / 60);
+            int secs = Mathf.FloorToInt(timeRemaining % 60);
+            ShowFeedback($"<color=red>SECURITY LOCKOUT: {mins:00}:{secs:00}</color>");
+        }
+        else
+        {
+            // The timer reached zero!
+            isLockedOut = false;
+            ShowFeedback("<color=yellow>SYSTEM READY.</color>");
+            if (instructionText != null) instructionText.SetActive(true);
+
+            StartCoroutine(HideFeedbackDelay());
+        }
+    }
+
+    private IEnumerator HideFeedbackDelay()
+    {
+        yield return new WaitForSeconds(3f);
+        if (feedbackText != null && !isLockedOut) feedbackText.gameObject.SetActive(false);
     }
 
     private void SetupNodesAndGraph()
     {
-        // Clear Old Objects
         foreach (Transform child in nodeContainer) Destroy(child.gameObject);
         foreach (Transform child in lineContainer) Destroy(child.gameObject);
         allNodes.Clear();
@@ -61,7 +124,6 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
         removedEdgeHistory.Clear();
         playerTotalCost = 0;
 
-        // Spawn Nodes
         Vector2[] positions = new Vector2[] {
             new Vector2(-3.5f, -1.5f), new Vector2(-3.5f, 1.0f),
             new Vector2(-1.5f, 0.5f),  new Vector2(-1.0f, 2.0f),
@@ -79,7 +141,6 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
             allNodes.Add(node);
         }
 
-        // Generate Edges
         int[,] edgesData = new int[,] {
             {0, 1, 25}, {0, 2, 30}, {0, 4, 50}, {0, 7, 95},
             {1, 2, 20}, {1, 3, 35}, {2, 3, 20}, {2, 4, 25},
@@ -126,14 +187,12 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
 
     private void RemoveEdge(EdgeUI e)
     {
-        if (audioSource != null && pruneSound != null)
-        {
-            audioSource.PlayOneShot(pruneSound);
-        }
-        if (isSolved) return; // Prevent interaction if already won
+        if (isSolved || isLockedOut) return;
 
         if (activeEdges.Contains(e))
         {
+            if (audioSource != null && pruneSound != null) audioSource.PlayOneShot(pruneSound);
+
             activeEdges.Remove(e);
             removedEdgeHistory.Add(e);
             e.gameObject.SetActive(false);
@@ -165,41 +224,43 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
 
     public void OnConfirm()
     {
-        if (isSolved) return;
+        if (isSolved || isLockedOut) return;
         if (feedbackText != null) feedbackText.gameObject.SetActive(true);
 
-        if (!CheckConnectivity() || activeEdges.Count != 7 || (int)playerTotalCost > trueMinimumWeight)
-        {
-            if (audioSource != null && errorSound != null)
-            {
-                audioSource.PlayOneShot(errorSound);
-            }
-        }
+        bool isConnected = CheckConnectivity();
+        bool hasNoCycles = activeEdges.Count == 7;
+        bool isOptimal = (int)playerTotalCost <= trueMinimumWeight;
 
-        if (!CheckConnectivity()) ShowFeedback("<color=red>Error: Network Disconnected</color>");
-        else if (activeEdges.Count != 7) ShowFeedback("<color=red>Error: Cycles Detected</color>");
-        else if ((int)playerTotalCost > trueMinimumWeight) ShowFeedback($"<color=orange>Efficiency Low. Current: {(int)playerTotalCost}</color>");
+        if (!isConnected || !hasNoCycles || !isOptimal)
+        {
+            if (audioSource != null && errorSound != null) audioSource.PlayOneShot(errorSound);
+
+            if (!isConnected) currentErrorReason = "Error: Network Disconnected";
+            else if (!hasNoCycles) currentErrorReason = "Error: Cycles Detected";
+            else currentErrorReason = $"Efficiency Low. Current: {(int)playerTotalCost}";
+
+            // Set the exact time in the future this puzzle will unlock using the Inspector variable
+            lockoutDuration = lockoutMinutes * 60f;
+            lockoutEndTime = Time.time + lockoutDuration + 2.5f;
+
+            isLockedOut = true;
+            if (instructionText != null) instructionText.SetActive(false);
+        }
         else
         {
-            // --- NEW: Play the success sound ---
-            if (audioSource != null && successSound != null)
-            {
-                audioSource.PlayOneShot(successSound);
-            }
-            // -----------------------------------
+            if (audioSource != null && successSound != null) audioSource.PlayOneShot(successSound);
+            if (instructionText != null) instructionText.SetActive(false);
 
             ShowFeedback("<color=green>SUCCESS! System Stabilized.</color>");
             isSolved = true;
-
             CompletePuzzle();
-
             StartCoroutine(CloseDelay());
         }
     }
 
     public void OnBack()
     {
-        if (isSolved) return;
+        if (isSolved || isLockedOut) return;
         if (removedEdgeHistory.Count > 0)
         {
             EdgeUI e = removedEdgeHistory[removedEdgeHistory.Count - 1];
@@ -213,9 +274,14 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
 
     public void OnReset()
     {
-        if (isSolved) return;
+        if (isSolved || isLockedOut) return;
         SetupNodesAndGraph();
         UpdateCostUI();
+    }
+
+    public void OnExit()
+    {
+        UIManager.Instance.CloseActivePuzzle();
     }
 
     private bool CheckConnectivity()
@@ -240,20 +306,19 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
     private void UpdateCostUI() { if (costText != null) costText.text = $"Load: {(int)playerTotalCost}"; }
     private void ShowFeedback(string m) { if (feedbackText != null) feedbackText.text = m; }
 
-    // Uses the UIManager to close safely
     private IEnumerator CloseDelay()
     {
         yield return new WaitForSeconds(2f);
         UIManager.Instance.CloseActivePuzzle();
     }
 
-    // 4. Implement the required "Solved" visuals
     protected override void OnShowSolvedState()
     {
         isSolved = true;
-        confirmButton.interactable = false;
-        resetButton.interactable = false;
-        backButton.interactable = false;
+        if (confirmButton != null) confirmButton.interactable = false;
+        if (resetButton != null) resetButton.interactable = false;
+        if (backButton != null) backButton.interactable = false;
+        if (instructionText != null) instructionText.SetActive(false);
         ShowFeedback("<color=green>SYSTEM STABILIZED (SOLVED)</color>");
         if (feedbackText != null) feedbackText.gameObject.SetActive(true);
     }

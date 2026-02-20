@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
 
     [Header("HUD References")]
     [SerializeField] private TextMeshProUGUI _timerText;
+    [SerializeField] private TextMeshProUGUI _scoreText;
     [SerializeField] private TextMeshProUGUI _interactionPromptText;
     [SerializeField] private GameObject _interactionPanel;
 
@@ -23,9 +24,15 @@ public class UIManager : MonoBehaviour
         if (GameManager.Instance != null && !GameManager.Instance.IsGamePaused)
         {
             float time = GameManager.Instance.CurrentTime;
-            float minutes = Mathf.FloorToInt(time / 60);
+            float hours = Mathf.FloorToInt(time / 3600 );
+            float minutes = Mathf.FloorToInt(time / 3600);
             float seconds = Mathf.FloorToInt(time % 60);
-            _timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+            _timerText.text = string.Format("Time Left - {0:00}:{1:00}:{2:00}", hours, minutes, seconds);
+
+            if (_scoreText != null)
+            {
+                _scoreText.text = "Score: " + GameManager.Instance.CurrentScore.ToString();
+            }
         }
     }
 
