@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,6 +8,7 @@ public class CheckGem : MonoBehaviour, IInteractable
     private bool foundReal = false;
     private string _interactionPrompt = "\"The counterfeit belongs within\"";
     public string InteractionPrompt => _interactionPrompt;
+    public AudioClip closeSound;
     public AudioClip alarmSound;
     private AudioSource audioSource;
     public Transform topLid;
@@ -31,7 +30,7 @@ public class CheckGem : MonoBehaviour, IInteractable
                     Debug.Log("Succeeed");
                     _interactionPrompt = "E to pick suitcase";
                     foundReal = true;
-                    Destroy(this);
+                    GemManager.instance.RemoveAllGems();
                 }
                 else
                 {
@@ -48,6 +47,7 @@ public class CheckGem : MonoBehaviour, IInteractable
 
     private void CloseBriefcase(Action callback, bool closing = true)
     {
+        audioSource.PlayOneShot(closeSound);
         topLid.DOLocalRotate(new Vector3(((closing) ? 80 : 0)
             , topLid.localRotation.y, topLid.localRotation.z), 1f, RotateMode.Fast).SetEase(closing? Ease.OutQuint: Ease.InQuint)
             .OnComplete(() =>
@@ -65,7 +65,7 @@ public class CheckGem : MonoBehaviour, IInteractable
     bool IInteractable.Interact(Interactor interactor)
     {
         if (!foundReal) return false;
-        //PickUpLogicHere
+        //Add to inventory
         return true;
     }
 }
