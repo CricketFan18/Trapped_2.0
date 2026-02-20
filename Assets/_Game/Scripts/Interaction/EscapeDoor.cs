@@ -7,6 +7,7 @@ public class EscapeDoor : MonoBehaviour, IInteractable
     public ParticleSystem explosionEffect;
     public AudioSource explosionSound;
     public GameObject doorModel; // The physical door mesh to hide
+    public GameObject c4;
 
     private bool isBlowingUp = false;
 
@@ -35,6 +36,7 @@ public class EscapeDoor : MonoBehaviour, IInteractable
         // If they have the C4, start the win sequence
         if (InventorySystem.Instance != null && InventorySystem.Instance.CollectedItemsNames.Contains("Armed C4"))
         {
+            c4.SetActive(true);
             StartCoroutine(DetonateSequence());
             return true;
         }
@@ -47,8 +49,8 @@ public class EscapeDoor : MonoBehaviour, IInteractable
         isBlowingUp = true;
         Debug.Log("C4 Planted! Detonating...");
 
-        yield return new WaitForSeconds(1f); // Dramatic pause
-
+        yield return new WaitForSeconds(5f); // Dramatic pause
+        c4.SetActive(false);
         // 1. Play Effects
         if (explosionEffect != null) explosionEffect.Play();
         if (explosionSound != null) explosionSound.Play();

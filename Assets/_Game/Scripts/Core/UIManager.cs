@@ -24,9 +24,12 @@ public class UIManager : MonoBehaviour
         if (GameManager.Instance != null && !GameManager.Instance.IsGamePaused)
         {
             float time = GameManager.Instance.CurrentTime;
-            float hours = Mathf.FloorToInt(time / 3600 );
-            float minutes = Mathf.FloorToInt(time / 3600);
+
+            // FIXED MATH HERE
+            float hours = Mathf.FloorToInt(time / 3600);
+            float minutes = Mathf.FloorToInt((time % 3600) / 60);
             float seconds = Mathf.FloorToInt(time % 60);
+
             _timerText.text = string.Format("Time Left - {0:00}:{1:00}:{2:00}", hours, minutes, seconds);
 
             if (_scoreText != null)

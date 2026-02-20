@@ -1916,6 +1916,7 @@ MonoBehaviour:
   door1: {fileID: 1600457340868808044}
   door2: {fileID: 7687024847667412511}
   particle: {fileID: 5249150766352364570}
+  c4: {fileID: 5241799094400468491, guid: c49b00186d2a7d94fa25218ae4072a70, type: 3}
 --- !u!82 &6422190063173506050
 AudioSource:
   m_ObjectHideFlags: 0
