@@ -66,7 +66,7 @@ public class KnapsackPuzzleUI : BasePuzzleUI
 
     private void Update()
     {
-        if (!can_check && Time.time - lastCheckTime > 5f)
+        if (!can_check && Time.time - lastCheckTime > 120f)
         {
             can_check = true;
             
