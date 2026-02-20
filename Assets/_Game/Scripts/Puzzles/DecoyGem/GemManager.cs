@@ -14,6 +14,7 @@ public class GemManager : MonoBehaviour
     public int placeFrame;
     public Transform cam;
     public List<Gem> gems = new List<Gem>();
+    public Transform spawnerButton;
 
     private void Awake()
     {
