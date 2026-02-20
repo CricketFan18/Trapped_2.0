@@ -27,7 +27,7 @@ public class CraftingSystem : BasePuzzleUI
     public Sprite c4ResultSprite;
 
     public Dictionary<GameObject, Transform> temporaryItemStorage = new Dictionary<GameObject, Transform>();
-    private readonly string[] c4Recipe = { "Casing", "Battery", "Timer", "Detonator", "Wires", "Mercury Switch" };
+    private readonly string[] c4Recipe = { "Casing", "Numpad", "Timer", "Detonator", "Wires", "Mercury Switch" };
 
     private bool _isSolved = false;
     private bool waitingForPickup = false;
