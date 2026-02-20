@@ -43,9 +43,9 @@ public class ClueUIManager : MonoBehaviour
 
         _isOpen = true;
 
-        // 1. Free the mouse cursor so they can read/click, but DO NOT pause the game!
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        // Use your GameManager to freeze the player & free the mouse WITHOUT pausing the timer
+        if (GameManager.Instance != null) GameManager.Instance.SetPuzzleMode(true);
+        if (UIManager.Instance != null) UIManager.Instance.SetInteractionPrompt(""); // Hide the crosshair text
     }
 
     public void CloseClue()
@@ -53,8 +53,7 @@ public class ClueUIManager : MonoBehaviour
         if (cluePanel != null) cluePanel.SetActive(false);
         _isOpen = false;
 
-        // 2. Lock the mouse back to the center of the screen
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Return player to normal FPS state
+        if (GameManager.Instance != null) GameManager.Instance.SetPuzzleMode(false);
     }
 }
