@@ -131,7 +131,7 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
             new Vector2(1.2f, 0.5f),   new Vector2(4.0f, -1.5f)
         };
 
-        float spacing = 180f;
+        float spacing = 150f;
         for (int i = 0; i < positions.Length; i++)
         {
             GameObject obj = Instantiate(nodePrefab, nodeContainer);
@@ -171,14 +171,33 @@ public class Puzzle_MSTNetwork : BasePuzzleUI
         rt.localRotation = Quaternion.Euler(0, 0, angle);
         obj.GetComponent<Image>().color = new Color(1, 1, 1, 0.45f);
 
-        GameObject txtObj = new GameObject("Label");
-        txtObj.transform.SetParent(obj.transform, false);
+        // --- NEW: Create a background box for the text ---
+        GameObject bgObj = new GameObject("LabelBackground", typeof(Image));
+        bgObj.transform.SetParent(obj.transform, false);
+
+        Image bgImage = bgObj.GetComponent<Image>();
+        // Sets a dark, slightly transparent background (R, G, B, Alpha)
+        bgImage.color = new Color(0.1f, 0.1f, 0.1f, 0.95f);
+
+        RectTransform bgRect = bgObj.GetComponent<RectTransform>();
+        bgRect.sizeDelta = new Vector2(50f, 40f); // Adjust this to make the box bigger/smaller
+
+        // --- UPDATED: Put the text inside the background box ---
+        GameObject txtObj = new GameObject("LabelText");
+        txtObj.transform.SetParent(bgObj.transform, false);
 
         TextMeshProUGUI t = txtObj.AddComponent<TextMeshProUGUI>();
         t.text = w.ToString();
-        t.fontSize = 28;
+        t.fontSize = 24; // Shrunk slightly to fit the box
         t.alignment = TextAlignmentOptions.Center;
         t.color = Color.white;
+
+        // This forces the text boundary to perfectly fill the background box
+        RectTransform txtRect = txtObj.GetComponent<RectTransform>();
+        txtRect.anchorMin = Vector2.zero;
+        txtRect.anchorMax = Vector2.one;
+        txtRect.sizeDelta = Vector2.zero;
+        // --------------------------------------------------------
 
         activeEdges.Add(e);
         allInitialEdges.Add(e);
