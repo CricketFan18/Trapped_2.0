@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WalkSpeed: 5
-  SprintSpeed: 8
+  SprintSpeed: 20
   Gravity: -9.81
   CameraTransform: {fileID: 921805447803803514}
   MouseSensitivity: 2

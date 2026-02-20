@@ -84,7 +84,8 @@ Transform:
   m_LocalPosition: {x: -0.58691144, y: -4.602351, z: -6.644684}
   m_LocalScale: {x: 0.4, y: 0.048, z: 0.4}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 6779730211893657382}
   m_Father: {fileID: 6129824863264019503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8955952177037242448
@@ -468,7 +469,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4915548724877839767}
-  - {fileID: 6779730211893657382}
   - {fileID: 485111950588282582}
   - {fileID: 4419274759639487323}
   - {fileID: 2979293918710718233}
@@ -503,11 +503,11 @@ Transform:
   m_GameObject: {fileID: 8735076317006551140}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.56391144, y: -5.1653514, z: -6.6066837}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.057500005, y: -11.729181, z: 0.09500027}
+  m_LocalScale: {x: 2.5, y: 20.833334, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6129824863264019503}
+  m_Father: {fileID: 485111950588282582}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4081241658139200930
 MeshFilter:
@@ -778,6 +778,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6129824863264019503}
     m_Modifications:
+    - target: {fileID: 2051167827398117558, guid: 29c11c084077b294e9b96f9266422a50, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.80394745
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051167827398117558, guid: 29c11c084077b294e9b96f9266422a50, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -85.96242
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286328909124654769, guid: 29c11c084077b294e9b96f9266422a50, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.2960854
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286328909124654769, guid: 29c11c084077b294e9b96f9266422a50, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -86.037384
+      objectReference: {fileID: 0}
     - target: {fileID: 7460412424800843077, guid: 29c11c084077b294e9b96f9266422a50, type: 3}
       propertyPath: m_Name
       value: WeighingScale
