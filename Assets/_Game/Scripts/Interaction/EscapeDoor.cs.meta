@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3a673d2f4a012d045b6760488ad09871
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - explosionEffect: {fileID: 43675762697838895, guid: 4705dedc8c3f08b46971c5adc97297ff, type: 3}
+  - explosionSound: {instanceID: 0}
+  - doorModel: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

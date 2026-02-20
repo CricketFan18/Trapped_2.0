@@ -9,7 +9,7 @@ public class CarScript : MonoBehaviour, IPointerClickHandler
     private void Start()
     {
         // Find the manager on the parent UI
-        _manager = GetComponentInParent<CarsManager>();
+        _manager = transform.parent.parent.GetComponentInChildren<CarsManager>();
     }
 
     public void OnPointerClick(PointerEventData eventData)

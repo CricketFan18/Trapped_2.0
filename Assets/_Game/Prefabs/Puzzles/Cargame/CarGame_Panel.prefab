@@ -1,62 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &186247432761956867
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1518172397056608574}
-  - component: {fileID: 5557142597021269725}
-  m_Layer: 5
-  m_Name: CarManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1518172397056608574
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 186247432761956867}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1064138001898131050}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5557142597021269725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 186247432761956867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdd3c1fe0be1e44419566337b5ff5bff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  carPivots:
-  - {fileID: 7910560921978110791}
-  - {fileID: 8145613098882065010}
-  - {fileID: 3907195639939664989}
-  - {fileID: 3900654951117793828}
-  rotationSpeed: 80
-  retryButton: {fileID: 316202087522628967}
-  countdownText: {fileID: 30275794754253099}
-  SuccessOverlay: {fileID: 4080315195644935408}
 --- !u!1 &373335008834880443
 GameObject:
   m_ObjectHideFlags: 0
@@ -524,7 +467,6 @@ RectTransform:
   m_Children:
   - {fileID: 4404306786055157496}
   - {fileID: 6729199183544015794}
-  - {fileID: 1518172397056608574}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1413,6 +1355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4404306786055157496}
+  - component: {fileID: 2170518216682408123}
   m_Layer: 5
   m_Name: Game
   m_TagString: Untagged
@@ -1446,6 +1389,27 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2170518216682408123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8028943816229592806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdd3c1fe0be1e44419566337b5ff5bff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carPivots:
+  - {fileID: 7910560921978110791}
+  - {fileID: 3900654951117793828}
+  - {fileID: 3907195639939664989}
+  - {fileID: 8145613098882065010}
+  rotationSpeed: 80
+  retryButton: {fileID: 316202087522628967}
+  countdownText: {fileID: 30275794754253099}
+  SuccessOverlay: {fileID: 4080315195644935408}
 --- !u!1 &8193248583433351770
 GameObject:
   m_ObjectHideFlags: 0
