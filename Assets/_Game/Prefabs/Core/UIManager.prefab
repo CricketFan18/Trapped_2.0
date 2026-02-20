@@ -586,9 +586,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timerText: {fileID: 2607940966812347763}
-  _scoreText: {fileID: 0}
+  _scoreText: {fileID: 8229716977247075723}
   _interactionPromptText: {fileID: 2036882524554566998}
-  _interactionPanel: {fileID: 0}
+  _interactionPanel: {fileID: 8427547085833654869}
   PuzzleParent: {fileID: 5180821659485720069}
 --- !u!1 &8314643611251602899
 GameObject:
