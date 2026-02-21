@@ -227,36 +227,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8970352612326234679, guid: aeec122b5cfbc844894e42eb2bd55386, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 541498669121970315}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aeec122b5cfbc844894e42eb2bd55386, type: 3}
 --- !u!4 &6255397971138062730 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4746534753112370497, guid: aeec122b5cfbc844894e42eb2bd55386, type: 3}
   m_PrefabInstance: {fileID: 1662029998710392011}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7741036122056089340 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8970352612326234679, guid: aeec122b5cfbc844894e42eb2bd55386, type: 3}
-  m_PrefabInstance: {fileID: 1662029998710392011}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &541498669121970315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7741036122056089340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cc0b6b8c2de8cf40b18061fdcac27e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PuzzleID: C4Escape
-  UIPrefab: {fileID: 6216516966159813604, guid: 04aa7bdde00a72a4c96288e5c4aaa461, type: 3}
-  ScoreAward: 100
 --- !u!1001 &1919224886440015347
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -471,7 +448,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3542120981881656479, guid: c8d889a173ae0724d958ce1fa9a0ee4b, type: 3}
       propertyPath: m_VersionIndex
-      value: 17
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 4419274759639487323, guid: c8d889a173ae0724d958ce1fa9a0ee4b, type: 3}
       propertyPath: m_LocalPosition.x
