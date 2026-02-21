@@ -112,6 +112,29 @@ public class FirstPersonController : MonoBehaviour
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * MouseSensitivity, 0);
     }
 
+    private void CheckControlScreen()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            movementPaused = true;
+            UIManager.Instance._controlScreen.gameObject.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            movementPaused = false;
+            UIManager.Instance._controlScreen.gameObject.SetActive(false);
+            if (!GameManager.Instance.IsInPuzzleMode)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
+    }
+    
+
     private void UpdateFocusMode()
     {
         if (_focusTarget == null) return;

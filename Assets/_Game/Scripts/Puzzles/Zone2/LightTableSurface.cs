@@ -108,8 +108,11 @@ public class LightTableSurface : MonoBehaviour, IInteractable
             if (fps != null)
             {
                 fps.ExitFocusMode();
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                if (!GameManager.Instance.IsInPuzzleMode)
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
             }
             _currentUser = null;
         }
