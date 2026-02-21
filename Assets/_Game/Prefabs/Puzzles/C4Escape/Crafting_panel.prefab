@@ -2087,7 +2087,7 @@ MonoBehaviour:
   - {fileID: 1623914583763750781}
   - {fileID: 3943179940314563683}
   resultSlot: {fileID: 8346727363934078413}
-  c4ResultSprite: {fileID: 21300000, guid: f507f03eb80bcbf49bb458bd6a54bd9a, type: 3}
+  c4ResultSprite: {fileID: 21300000, guid: ba8bd2f17e63dc14885a07b6a3a3d031, type: 3}
 --- !u!1 &6561746271788871303
 GameObject:
   m_ObjectHideFlags: 0

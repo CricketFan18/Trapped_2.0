@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2388344177000262800}
   - component: {fileID: 1362677573656935726}
   - component: {fileID: 1785812172994238608}
-  - component: {fileID: 7311073091763953183}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -75,25 +74,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WalkSpeed: 5
-  SprintSpeed: 10
+  SprintSpeed: 8
   Gravity: -9.81
   CameraTransform: {fileID: 921805447803803514}
   MouseSensitivity: 2
   LookXLimit: 85
   respawnPoint: {x: 0, y: 0, z: 0}
---- !u!114 &7311073091763953183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 427017389816117100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b530c20dc122d8488b89ecfeec6e777, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  safeSpawnLocation: {fileID: 0}
 --- !u!1 &2010917529948185784
 GameObject:
   m_ObjectHideFlags: 0

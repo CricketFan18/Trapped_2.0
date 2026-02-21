@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     [Tooltip("An Empty UI Panel stretched to fill the screen")]
     public Transform PuzzleParent;
     private GameObject _activePuzzleUI;
+    public Transform gameOver;
 
     private void Awake() { if (Instance == null) Instance = this; }
 
@@ -69,5 +70,11 @@ public class UIManager : MonoBehaviour
             _interactionPanel.SetActive(true);
             _interactionPromptText.text = promptText;
         }
+    }
+
+    public void ShowEndScreen()
+    {
+        gameOver.gameObject.SetActive(true);
+        GameManager.Instance.IsGamePaused = true;
     }
 }

@@ -37,6 +37,7 @@ public class EscapeDoor : MonoBehaviour, IInteractable
         if (InventorySystem.Instance != null && InventorySystem.Instance.CollectedItemsNames.Contains("Armed C4"))
         {
             c4.SetActive(true);
+            GameManager.Instance.AddScore(100, "Bomb Planted");
             StartCoroutine(DetonateSequence());
             return true;
         }

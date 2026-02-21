@@ -99,7 +99,8 @@ public class GameManager : MonoBehaviour
         {
             SheetManager.Instance.SendFinalTime(MaxTime);
         }
-
+        
+        UIManager.Instance.ShowEndScreen();
         // UIManager.Instance.ShowEndScreen(CurrentScore, false); // Add later
     }
 
@@ -127,6 +128,6 @@ public class GameManager : MonoBehaviour
             SheetManager.Instance.SendFinalTime(timeTaken);
         }
 
-        // UIManager.Instance.ShowEndScreen(CurrentScore, true); // Add later
+        UIManager.Instance.ShowEndScreen(); // Add later
     }
 }

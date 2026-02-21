@@ -70,7 +70,7 @@ public class FirstPersonController : MonoBehaviour
     private void Update()
     {
         CheckControlScreen();
-        if(movementPaused) return;
+        if(movementPaused || GameManager.Instance.IsGamePaused) return;
         
         if (IsFocused)
         {
