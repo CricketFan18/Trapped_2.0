@@ -1227,7 +1227,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 65, y: 0}
-  m_SizeDelta: {x: 3000, y: 980}
+  m_SizeDelta: {x: 2990, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &442672276609042950
 CanvasRenderer:
@@ -1791,7 +1791,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameSceneName: Main_Game
-  EventAccessCode: START2025
+  EventAccessCode: TRAPPED2126
   RegistrationPanel: {fileID: 1931595237763962539}
   WaitingPanel: {fileID: 5646826516631816424}
   TeamNameInput: {fileID: 8122037575587688425}
@@ -2859,7 +2859,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7ca5603396a8854db404be7b872fc72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WebAppURL: https://script.google.com/macros/s/AKfycbwe8T8euOLquvZ3uOx-wIriwzHLJn1hSFIxYOzugMLZRqtRcS2XgwM3WQyUuvGnGqkB/exec
+  WebAppURL: https://script.google.com/macros/s/AKfycbyLes63ylPKCG1oQu_uJqxZbd7DYBEWNfjZ3VtVtIDdjCDQ4hfMiG6WXyB43RHg4LyOcQ/exec
   TeamName: 
 --- !u!1 &3318749617642798100
 GameObject:

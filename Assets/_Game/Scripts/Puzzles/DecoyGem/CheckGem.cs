@@ -32,6 +32,7 @@ public class CheckGem : MonoBehaviour, IInteractable
                     GoldSpawner.instance.SpawnGoldbar();
                     foundReal = true;
                     GemManager.instance.RemoveAllGems();
+                    GameManager.Instance.AddScore(100, "DecoyGem");
                 }
                 else
                 {

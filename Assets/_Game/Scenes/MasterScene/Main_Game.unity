@@ -251,10 +251,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2209301361152874567, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 20.387
-      objectReference: {fileID: 0}
     - target: {fileID: 2999775588480713517, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1
@@ -295,89 +291,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3658079966109912213, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -15.635
-      objectReference: {fileID: 0}
-    - target: {fileID: 3658079966109912213, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 12.746
-      objectReference: {fileID: 0}
-    - target: {fileID: 3658079966109912213, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 17.869
-      objectReference: {fileID: 0}
-    - target: {fileID: 3855430653264540655, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 12.756
-      objectReference: {fileID: 0}
-    - target: {fileID: 4572234474545181229, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 13.85
-      objectReference: {fileID: 0}
-    - target: {fileID: 5578672905137202802, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -6.275
-      objectReference: {fileID: 0}
-    - target: {fileID: 5578672905137202802, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 13.949
-      objectReference: {fileID: 0}
-    - target: {fileID: 5578672905137202802, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 35.312
-      objectReference: {fileID: 0}
-    - target: {fileID: 6176192760089984210, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 20.167
-      objectReference: {fileID: 0}
-    - target: {fileID: 6703306270911365394, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.019
-      objectReference: {fileID: 0}
-    - target: {fileID: 6703306270911365394, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.321
-      objectReference: {fileID: 0}
-    - target: {fileID: 6703306270911365394, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.12
-      objectReference: {fileID: 0}
-    - target: {fileID: 7246198012658904929, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 20.56
-      objectReference: {fileID: 0}
-    - target: {fileID: 7785564505516861112, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7785564505516861112, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.381
-      objectReference: {fileID: 0}
-    - target: {fileID: 8048475429845065529, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.819
-      objectReference: {fileID: 0}
-    - target: {fileID: 8048475429845065529, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 19.769
-      objectReference: {fileID: 0}
     - target: {fileID: 8387625037967526267, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
       propertyPath: m_Name
       value: GameObject
       objectReference: {fileID: 0}
-    - target: {fileID: 8405366617345062422, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: itemIcon
-      value: 
-      objectReference: {fileID: 21300000, guid: d82dc9f5739ced44dbf1d87691382454, type: 3}
-    - target: {fileID: 8417731044958884656, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 12.007
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 1588077179986503236, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 095f4a0a6f992b54fa1320f7d1d712ef, type: 3}
@@ -395,7 +314,7 @@ PrefabInstance:
       objectReference: {fileID: 1550533110}
     - target: {fileID: 1801202919405108006, guid: 5b419f6c98fafd34d86bab7f2ccdc741, type: 3}
       propertyPath: m_VersionIndex
-      value: 35
+      value: 47
       objectReference: {fileID: 0}
     - target: {fileID: 3650061468467852402, guid: 5b419f6c98fafd34d86bab7f2ccdc741, type: 3}
       propertyPath: m_Mesh
@@ -583,8 +502,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: Init
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7311073091763953183, guid: 53c107a4b921c3148b40ceb87595f399, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1002,11 +920,11 @@ PrefabInstance:
       propertyPath: ClueMessage
       value: 'The grid is awake, the sensors are eight,
 
-        A single glass
-        vein determines your fate.
+        A single glass vein
+        determines your fate.
 
-        Seek the closest neighbor, ignore the
-        far shore,
+        Seek the closest neighbor, ignore the far
+        shore,
 
         Leave no node stranded, but connect them no more.
 
@@ -1921,19 +1839,19 @@ PrefabInstance:
       propertyPath: ClueMessage
       value: 'First grab the shell, then pack in the clay,
 
-        Slot in the
-        numpad, tucked safely away.
+        Slot in the numpad,
+        tucked safely away.
 
-        Wire the tilt switch so the circuit
-        can run,
+        Wire the tilt switch so the circuit can run,
 
-        Then screw down the clock, but you still aren''t done.
+        Then
+        screw down the clock, but you still aren''t done.
 
-        The
-        very last piece is the volatile spark,
+        The very last
+        piece is the volatile spark,
 
-        Plug it in early, and things
-        will go dark.
+        Plug it in early, and things will go
+        dark.
 
 '
       objectReference: {fileID: 0}
