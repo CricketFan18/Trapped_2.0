@@ -10,11 +10,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _scoreText;
     [SerializeField] private TextMeshProUGUI _interactionPromptText;
     [SerializeField] private GameObject _interactionPanel;
+    public GameObject _controlScreen;
 
     [Header("Puzzle UI System")]
     [Tooltip("An Empty UI Panel stretched to fill the screen")]
     public Transform PuzzleParent;
-
     private GameObject _activePuzzleUI;
 
     private void Awake() { if (Instance == null) Instance = this; }

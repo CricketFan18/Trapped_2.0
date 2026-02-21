@@ -23,7 +23,9 @@ public class FirstPersonController : MonoBehaviour
     private Vector3 _savedCamLocalPos;
     private Quaternion _savedCamLocalRot;
     private Vector3 _savedBodyPos;
+    private bool movementPaused = false;
     private Quaternion _savedBodyRot;
+    public Vector3 respawnPoint;
     private Transform _focusTarget;
 
     public void EnterFocusMode(Transform target)
@@ -37,7 +39,6 @@ public class FirstPersonController : MonoBehaviour
         _savedCamLocalRot = CameraTransform.localRotation;
         _savedBodyPos = transform.position;
         _savedBodyRot = transform.rotation;
-
         _characterController.enabled = false;
 
         Debug.Log($"[FPS] Entered Focus Mode -> {target.name} at {target.position}");
@@ -63,14 +64,25 @@ public class FirstPersonController : MonoBehaviour
     private void Start()
     {
         _characterController = GetComponent<CharacterController>();
+        respawnPoint =  transform.position;
     }
 
     private void Update()
     {
+        CheckControlScreen();
+        if(movementPaused) return;
+        
         if (IsFocused)
         {
             UpdateFocusMode();
             return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _characterController.enabled = false;
+            transform.position = respawnPoint;
+            _characterController.enabled = true;
         }
         
         // 1. Calculate Movement (Local Space)
@@ -96,6 +108,22 @@ public class FirstPersonController : MonoBehaviour
         CameraTransform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * MouseSensitivity, 0);
     }
+
+    private void CheckControlScreen()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            movementPaused = true;
+            UIManager.Instance._controlScreen.gameObject.SetActive(true);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            movementPaused = false;
+            UIManager.Instance._controlScreen.gameObject.SetActive(false);
+        }
+    }
+    
 
     private void UpdateFocusMode()
     {

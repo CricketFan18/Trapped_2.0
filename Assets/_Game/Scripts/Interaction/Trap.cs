@@ -24,6 +24,8 @@ public class Trap : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
+        FirstPersonController fpsController = other.gameObject.GetComponent<FirstPersonController>();
+        if (fpsController) fpsController.respawnPoint = fpsController.transform.position;
         audioSource.Play();
         door1.DOLocalRotate(Vector3.zero, 0.3f, RotateMode.Fast).SetEase(Ease.InQuint);
         door2.DOLocalRotate(Vector3.zero, 0.3f, RotateMode.Fast).SetEase(Ease.InQuint).OnComplete(() =>
