@@ -29,6 +29,7 @@ public class CheckGem : MonoBehaviour, IInteractable
                 {
                     Debug.Log("Succeeed");
                     _interactionPrompt = "E to pick suitcase";
+                    GoldSpawner.instance.SpawnGoldbar();
                     foundReal = true;
                     GemManager.instance.RemoveAllGems();
                 }
