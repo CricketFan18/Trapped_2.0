@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemName: Mercury Switch
-  itemIcon: {fileID: 21300000, guid: cc2e88735d67ea54c94e5f8bfd4554fc, type: 3}
+  itemIcon: {fileID: 21300000, guid: d82dc9f5739ced44dbf1d87691382454, type: 3}
 --- !u!65 &1626630184824577126
 BoxCollider:
   m_ObjectHideFlags: 0
