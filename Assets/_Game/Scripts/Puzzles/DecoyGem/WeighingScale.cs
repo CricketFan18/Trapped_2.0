@@ -11,9 +11,9 @@ public class WeighingScale : MonoBehaviour, IInteractable
     public Transform scalePivot;
     public Transform leftScale;
     public Transform rightScale;
-    private Vector3 balancedRot;
-    private Vector3 leftRot = new Vector3(74f, 90f, -270f);
-    private Vector3 rightRot = new Vector3(107.082f, 90f, -270f);
+    private Vector3 balancedRot = new Vector3(90, -90, 270);
+    private Vector3 rightRot = new Vector3(75f, -90f, 270f);
+    private Vector3 leftRot = new Vector3(105f, -90f, 270f);
     private int battery = 3;
     private float cooldown = 0;
     public Transform PanelScreen;
@@ -22,7 +22,7 @@ public class WeighingScale : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        balancedRot = transform.rotation.eulerAngles;
+        scalePivot.rotation = Quaternion.Euler(balancedRot);
     }
 
     bool IInteractable.Interact(Interactor interactor)
@@ -35,7 +35,7 @@ public class WeighingScale : MonoBehaviour, IInteractable
         int rightWeight = CalculateWeight(rightScale);
         if (leftWeight == rightWeight)
         {
-            scalePivot.DORotate(balancedRot, 0.3f); 
+            scalePivot.rotation = Quaternion.Euler(balancedRot);
         }
         else if (leftWeight > rightWeight) UpdateScale(true);
         else UpdateScale(false);
@@ -90,8 +90,8 @@ public class WeighingScale : MonoBehaviour, IInteractable
 
     void UpdateScale(bool leftHeavy)
     {
-        float moveAmount = (leftHeavy)? 15 : -15;
-        scalePivot.DORotate((leftHeavy)? leftRot : rightRot, 0.3f);
+        // scalePivot.DORotate((leftHeavy)? leftRot : rightRot, 0.3f);
+        scalePivot.rotation = Quaternion.Euler((leftHeavy) ? leftRot : rightRot);
     }
     
     int CalculateWeight(Transform t)

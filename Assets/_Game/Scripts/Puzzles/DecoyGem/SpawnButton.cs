@@ -9,25 +9,24 @@ public class SpawnButton : MonoBehaviour, IInteractable
     public Transform gemPrefab;
     public Transform spawnPoint;
     public string InteractionPrompt => "Press E to Spawn";
-    private bool disabled = false;
+    private bool spawning = false;
 
     public bool Interact(Interactor interactor)
     {
-        if (disabled) return false;
         SpawnGems();
         return true;
     }
 
     public void SpawnGems()
     {
+        if(spawning) return;
+        GemManager.instance.RemoveAllGems();
         GetComponent<AudioSource>().Play();
         transform.DOMoveY(transform.position.y - 0.065f, 0.1f)
             .SetEase(Ease.OutQuad)
             .SetLoops(2, LoopType.Yoyo);
-        StartCoroutine(SpawnCoroutine());
+        StartCoroutine(SpawnCoroutine()); spawning = true;
         GemManager.instance.spawnerButton = transform;
-        GetComponent<Renderer>().material.color = Color.gray;
-        disabled = true;
     }
     
     IEnumerator SpawnCoroutine()
@@ -38,11 +37,6 @@ public class SpawnButton : MonoBehaviour, IInteractable
             yield return new WaitForSeconds(0.2f);
         }
         GemManager.instance.MakeFake();
-    }
-
-    public void EnableButton()
-    {
-        disabled = false;
-        GetComponent<Renderer>().material.color = Color.red;
+        spawning = false;
     }
 }
