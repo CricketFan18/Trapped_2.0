@@ -3,15 +3,16 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CheckGem : MonoBehaviour, IInteractable
+public class CheckGem : MonoBehaviour
 {
     private bool foundReal = false;
-    private string _interactionPrompt = "\"The counterfeit belongs within\"";
-    public string InteractionPrompt => _interactionPrompt;
+    public string _interactionPrompt = "\"The counterfeit belongs within\"";
+
     public AudioClip closeSound;
     public AudioClip alarmSound;
     private AudioSource audioSource;
     public Transform topLid;
+    private int remainingTries = 3;
 
     private void Start()
     {
@@ -36,11 +37,15 @@ public class CheckGem : MonoBehaviour, IInteractable
                 }
                 else
                 {
+                    remainingTries--;
                     GemManager.instance.RemoveAllGems();
-                    CloseBriefcase((() =>
+                    if (remainingTries <= 0)
                     {
-                        GemManager.instance.spawnerButton.AddComponent<SpawnButton>().EnableButton();
-                    }), false);
+                        _interactionPrompt = "Too many attempts";
+                        return;
+                    }
+
+                    CloseBriefcase((() => { _interactionPrompt = $"{remainingTries} tries remaining"; }), false);
                     TriggerAlarm();
                 }
             }
@@ -51,23 +56,19 @@ public class CheckGem : MonoBehaviour, IInteractable
     {
         audioSource.PlayOneShot(closeSound);
         topLid.DOLocalRotate(new Vector3(((closing) ? 80 : 0)
-            , topLid.localRotation.y, topLid.localRotation.z), 1f, RotateMode.Fast).SetEase(closing? Ease.OutQuint: Ease.InQuint)
-            .OnComplete(() =>
-            {
-                callback.Invoke();
-            });
+                , topLid.localRotation.y, topLid.localRotation.z), 1f, RotateMode.Fast)
+            .SetEase(closing ? Ease.OutQuint : Ease.InQuint)
+            .OnComplete(() => { callback.Invoke(); });
     }
-    
+
+    private void Update()
+    {
+        Debug.Log(remainingTries);
+    }
+
     public void TriggerAlarm()
     {
-        audioSource.clip = alarmSound; audioSource.Play();
-        GameManager.Instance.TimePenalty(300f);
-    }
-    
-    bool IInteractable.Interact(Interactor interactor)
-    {
-        if (!foundReal) return false;
-        //Add to inventory
-        return true;
+        audioSource.clip = alarmSound;
+        audioSource.Play();
     }
 }

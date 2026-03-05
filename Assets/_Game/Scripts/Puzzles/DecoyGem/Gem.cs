@@ -48,9 +48,19 @@ public class Gem : MonoBehaviour, IInteractable
         
         if (Physics.Raycast(ray, out hit, 5f))
         {
-            transform.SetParent(null);
-            transform.GetComponent<Rigidbody>().isKinematic = false;
-            transform.position = hit.point;
+            scalePlate plate = hit.collider.GetComponent<scalePlate>();
+            if (plate != null)
+            {
+                bool placed = plate.PlaceOnPlate(this);
+                if(!placed) return;
+            }
+            else
+            {
+                transform.SetParent(null);
+                transform.GetComponent<Rigidbody>().isKinematic = false;
+                transform.position = hit.point;
+            }
+            
             GemManager.instance.holding = false;
             GemManager.instance.heldGem = null;
         }
